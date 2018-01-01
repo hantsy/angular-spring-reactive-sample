@@ -6,6 +6,8 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
 @RestController()
 @RequestMapping(value = "/posts")
 class PostController {
@@ -32,20 +34,24 @@ class PostController {
     }
 
     @PutMapping("/{id}")
-    public Mono<Post> update(@PathVariable("id") String id, @RequestBody Post post) {
+    public Mono<Post> update(@PathVariable("id") String id, @RequestBody @Valid Post post) {
         return this.posts.findById(id)
-                .map(p -> {
-                    p.setTitle(post.getTitle());
-                    p.setContent(post.getContent());
+            .switchIfEmpty(Mono.error(new PostNotFoundException(id)))
+            .map(p -> {
+                p.setTitle(post.getTitle());
+                p.setContent(post.getContent());
 
-                    return p;
-                })
-                .flatMap(p -> this.posts.save(p));
+                return p;
+            })
+            .flatMap(this.posts::save);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(NO_CONTENT)
     public Mono<Void> delete(@PathVariable("id") String id) {
-        return this.posts.deleteById(id);
+        return this.posts.findById(id)
+            .switchIfEmpty(Mono.error(new PostNotFoundException(id)))
+            .flatMap( this.posts::delete);
     }
 
 }
