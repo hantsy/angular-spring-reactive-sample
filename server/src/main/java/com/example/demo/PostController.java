@@ -6,6 +6,9 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 
+import java.util.Optional;
+
+import static java.util.Comparator.comparing;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController()
@@ -19,8 +22,22 @@ class PostController {
     }
 
     @GetMapping("")
-    public Flux<Post> all() {
-        return this.posts.findAll();
+    public Flux<Post> all(@RequestParam(value = "q", required = false) String q,
+                          @RequestParam(value = "page", defaultValue = "0") long page,
+                          @RequestParam(value ="size", defaultValue = "10") long size) {
+        return filterByKeyword(q)
+            .sort(comparing(Post::getCreatedDate).reversed())
+            .skip(page * size).take(size);
+    }
+
+    @GetMapping("/count")
+    public Mono<Long> count(@RequestParam("q") String q) {
+        return filterByKeyword(q).count();
+    }
+
+    private Flux<Post> filterByKeyword(String q) {
+        return this.posts.findAll()
+            .filter(p -> Optional.ofNullable(q).map(key-> p.getTitle().contains(key) || p.getContent().contains(key)).orElse(true));
     }
 
     @PostMapping("")

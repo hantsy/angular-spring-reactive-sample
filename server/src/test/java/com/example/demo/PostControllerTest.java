@@ -13,7 +13,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.IntStream;
 
+import static java.util.stream.Collectors.toList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -40,6 +43,32 @@ public class PostControllerTest {
             .jsonPath("$[0].content").isEqualTo("content of my first post");
 
         verify(this.posts, times(1)).findAll();
+        verifyNoMoreInteractions(this.posts);
+
+    }
+
+    @Test
+    public void getAllPostsBykeyword_shouldBeOk() {
+        List<Post> data = IntStream.range(1, 16)//15 posts will be created.
+            .mapToObj(n -> Post.builder()
+                .id("" + n)
+                .title("my " + n + " first post")
+                .content("content of my " + n + " first post")
+                .createdDate(LocalDateTime.now())
+                .build())
+            .collect(toList());
+
+        given(posts.findAll())
+            .willReturn(Flux.fromIterable(data));
+
+        client.get().uri("/posts").exchange()
+            .expectStatus().isOk()
+            .expectBodyList(Post.class).hasSize(10);
+        client.get().uri("/posts?page={page}", 1).exchange()
+            .expectStatus().isOk()
+            .expectBodyList(Post.class).hasSize(5);
+
+        verify(this.posts, times(2)).findAll();
         verifyNoMoreInteractions(this.posts);
 
     }

@@ -81,6 +81,9 @@ class WebConfig {
                     exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
 
                     DataBuffer db = new DefaultDataBufferFactory().wrap(objectMapper.writeValueAsBytes(errors));
+
+                    // write the given data buffer to the response
+                    // and return a Mono that signals when it's done
                     return exchange.getResponse().writeWith(Mono.just(db));
 
                 } catch (JsonProcessingException e) {
@@ -89,6 +92,8 @@ class WebConfig {
                 }
             } else if (ex instanceof PostNotFoundException) {
                 exchange.getResponse().setStatusCode(HttpStatus.NOT_FOUND);
+
+                // marks the response as complete and forbids writing to it
                 return exchange.getResponse().setComplete();
             }
             return Mono.empty();
