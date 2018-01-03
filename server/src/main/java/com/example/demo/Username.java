@@ -1,14 +1,13 @@
 package com.example.demo;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.*;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@AllArgsConstructor(onConstructor = @__({@JsonCreator}))
+@ToString
 public class Username {
     private String  username;
 }

@@ -68,7 +68,17 @@ public class PostControllerTest {
             .expectStatus().isOk()
             .expectBodyList(Post.class).hasSize(5);
 
-        verify(this.posts, times(2)).findAll();
+        client.get().uri("/posts/count").exchange()
+            .expectStatus().isOk()
+            .expectBody()
+            .jsonPath("$.count").isEqualTo(15);
+
+        client.get().uri("/posts/count?q={q}", "5").exchange()
+            .expectStatus().isOk()
+            .expectBody()
+            .jsonPath("$.count").isEqualTo(2);
+
+        verify(this.posts, times(4)).findAll();
         verifyNoMoreInteractions(this.posts);
 
     }
