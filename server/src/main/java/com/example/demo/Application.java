@@ -1,11 +1,18 @@
 package com.example.demo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.http.HttpMethod;
@@ -32,8 +39,9 @@ import org.springframework.web.server.session.HeaderWebSessionIdResolver;
 import org.springframework.web.server.session.WebSessionIdResolver;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 public class Application {
@@ -51,42 +59,74 @@ public class Application {
 
 @Configuration
 @Slf4j
-class WebConfig{
-    @Bean
-    @Order(-2)
+class WebConfig {
+
     // see: https://stackoverflow.com/questions/47631243/spring-5-reactive-webexceptionhandler-is-not-getting-called
     // and https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/html/boot-features-developing-web-applications.html#boot-features-webflux-error-handling
-    public WebExceptionHandler exceptionHandler(/*ObjectMapper objectMapper*/) {
+    // and https://stackoverflow.com/questions/48047645/how-to-write-messages-to-http-body-in-spring-webflux-webexceptionhandlder/48057896#48057896
+    @Bean
+    @Order(-2)
+    public WebExceptionHandler exceptionHandler(ObjectMapper objectMapper) {
         return (ServerWebExchange exchange, Throwable ex) -> {
             if (ex instanceof WebExchangeBindException) {
-                WebExchangeBindException cvex = (WebExchangeBindException) ex;
-                Map<String, String> errors = new HashMap<>();
-                log.debug("errors:" + cvex.getFieldErrors());
-                cvex.getFieldErrors().forEach(ev -> errors.put(ev.getField(), ev.getDefaultMessage()));
+                WebExchangeBindException webExchangeBindException = (WebExchangeBindException) ex;
+
+                log.debug("errors:" + webExchangeBindException.getFieldErrors());
+                ApiErrors errors = new ApiErrors("validation_failed", "Validation failed.");
+                webExchangeBindException.getFieldErrors().forEach(e -> errors.add(e.getField(), e.getCode(), e.getDefaultMessage()));
 
                 log.debug("handled errors::" + errors);
-                exchange.getResponse().setStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
-                exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
+                try {
+                    exchange.getResponse().setStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
+                    exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
 
-                return exchange.getResponse().setComplete();
-//                try {
-//                    DataBuffer db = new DefaultDataBufferFactory().wrap(objectMapper.writeValueAsBytes(errors));
-//                    exchange.getResponse().writeWith(Mono.just(db));
-//                    exchange.getResponse().setStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
-//                    exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
-//
-//                    return exchange.getResponse().setComplete();
-//
-//                } catch (JsonProcessingException e) {
-//                    e.printStackTrace();
-//                    return Mono.empty();
-//                }
+                    DataBuffer db = new DefaultDataBufferFactory().wrap(objectMapper.writeValueAsBytes(errors));
+                    return exchange.getResponse().writeWith(Mono.just(db));
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                    return Mono.empty();
+                }
             } else if (ex instanceof PostNotFoundException) {
                 exchange.getResponse().setStatusCode(HttpStatus.NOT_FOUND);
                 return exchange.getResponse().setComplete();
             }
             return Mono.empty();
         };
+    }
+
+    @Getter
+    @ToString
+    static class ApiErrors implements Serializable {
+        private String code;
+        private String message;
+        private List<FieldError> errors = new ArrayList<>();
+
+        @JsonCreator
+        ApiErrors(String code, String message) {
+            this.code = code;
+            this.message = message;
+        }
+
+        public void add(String path, String code, String message) {
+            this.errors.add(new FieldError(path, code, message));
+        }
+    }
+
+    @Getter
+    @ToString
+    static class FieldError implements Serializable {
+        private String path;
+        private String code;
+        private String message;
+
+        @JsonCreator
+        FieldError(String path, String code, String message) {
+            this.path = path;
+            this.code = code;
+            this.message = message;
+        }
+
     }
 }
 
@@ -122,6 +162,7 @@ class SessionConfig {
 
 @Configuration
 class SecurityConfig {
+
     @Bean
     SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) throws Exception {
 
