@@ -33,6 +33,8 @@ import org.springframework.security.web.server.authorization.AuthorizationContex
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 import org.springframework.session.data.mongo.config.annotation.web.reactive.EnableMongoWebSession;
 import org.springframework.web.bind.support.WebExchangeBindException;
+import org.springframework.web.reactive.config.CorsRegistry;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
 import org.springframework.web.server.session.HeaderWebSessionIdResolver;
@@ -59,7 +61,11 @@ public class Application {
 
 @Configuration
 @Slf4j
-class WebConfig {
+class WebConfig implements WebFluxConfigurer{
+
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**");
+    }
 
     // see: https://stackoverflow.com/questions/47631243/spring-5-reactive-webexceptionhandler-is-not-getting-called
     // and https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/html/boot-features-developing-web-applications.html#boot-features-webflux-error-handling
@@ -72,7 +78,7 @@ class WebConfig {
                 WebExchangeBindException webExchangeBindException = (WebExchangeBindException) ex;
 
                 log.debug("errors:" + webExchangeBindException.getFieldErrors());
-                ApiErrors errors = new ApiErrors("validation_failed", "Validation failed.");
+                Errors errors = new Errors("validation_failed", "Validation failed.");
                 webExchangeBindException.getFieldErrors().forEach(e -> errors.add(e.getField(), e.getCode(), e.getDefaultMessage()));
 
                 log.debug("handled errors::" + errors);
@@ -102,31 +108,31 @@ class WebConfig {
 
     @Getter
     @ToString
-    static class ApiErrors implements Serializable {
+    static class Errors implements Serializable {
         private String code;
         private String message;
-        private List<FieldError> errors = new ArrayList<>();
+        private List<Error> errors = new ArrayList<>();
 
         @JsonCreator
-        ApiErrors(String code, String message) {
+        Errors(String code, String message) {
             this.code = code;
             this.message = message;
         }
 
         public void add(String path, String code, String message) {
-            this.errors.add(new FieldError(path, code, message));
+            this.errors.add(new Error(path, code, message));
         }
     }
 
     @Getter
     @ToString
-    static class FieldError implements Serializable {
+    static class Error implements Serializable {
         private String path;
         private String code;
         private String message;
 
         @JsonCreator
-        FieldError(String path, String code, String message) {
+        Error(String path, String code, String message) {
             this.path = path;
             this.code = code;
             this.message = message;

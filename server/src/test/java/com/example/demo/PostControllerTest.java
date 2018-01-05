@@ -48,7 +48,7 @@ public class PostControllerTest {
     }
 
     @Test
-    public void getAllPostsBykeyword_shouldBeOk() {
+    public void getAllPostsByKeyword_shouldBeOk() {
         List<Post> data = IntStream.range(1, 16)//15 posts will be created.
             .mapToObj(n -> Post.builder()
                 .id("" + n)
@@ -73,7 +73,13 @@ public class PostControllerTest {
             .expectBody()
             .jsonPath("$.count").isEqualTo(15);
 
-        client.get().uri("/posts/count?q={q}", "5").exchange()
+        client.get()
+            .uri(uriBuilder -> uriBuilder
+                .path("/posts/count")
+                .queryParam("q", "5")
+                .build()
+            )
+            .exchange()
             .expectStatus().isOk()
             .expectBody()
             .jsonPath("$.count").isEqualTo(2);
