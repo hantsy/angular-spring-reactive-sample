@@ -1,23 +1,13 @@
 package com.example.demo;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.Authentication;
@@ -32,18 +22,11 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 import org.springframework.session.data.mongo.config.annotation.web.reactive.EnableMongoWebSession;
-import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
-import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebExceptionHandler;
 import org.springframework.web.server.session.HeaderWebSessionIdResolver;
 import org.springframework.web.server.session.WebSessionIdResolver;
 import reactor.core.publisher.Mono;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 public class Application {
@@ -65,84 +48,6 @@ class WebConfig implements WebFluxConfigurer {
 
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**");
-    }
-}
-
-@Configuration
-@Slf4j
-class WebExceptionHandlingConfig {
-
-    // see: https://stackoverflow.com/questions/47631243/spring-5-reactive-webexceptionhandler-is-not-getting-called
-    // and https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/html/boot-features-developing-web-applications.html#boot-features-webflux-error-handling
-    // and https://stackoverflow.com/questions/48047645/how-to-write-messages-to-http-body-in-spring-webflux-webexceptionhandlder/48057896#48057896
-    @Bean
-    @Order(-2)
-    public WebExceptionHandler exceptionHandler(ObjectMapper objectMapper) {
-        return (ServerWebExchange exchange, Throwable ex) -> {
-            if (ex instanceof WebExchangeBindException) {
-                WebExchangeBindException webExchangeBindException = (WebExchangeBindException) ex;
-
-                log.debug("errors:" + webExchangeBindException.getFieldErrors());
-                Errors errors = new Errors("validation_failed", "Validation failed.");
-                webExchangeBindException.getFieldErrors().forEach(e -> errors.add(e.getField(), e.getCode(), e.getDefaultMessage()));
-
-                log.debug("handled errors::" + errors);
-                try {
-                    exchange.getResponse().setStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
-                    exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
-
-                    DataBuffer db = new DefaultDataBufferFactory().wrap(objectMapper.writeValueAsBytes(errors));
-
-                    // write the given data buffer to the response
-                    // and return a Mono that signals when it's done
-                    return exchange.getResponse().writeWith(Mono.just(db));
-
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                    return Mono.empty();
-                }
-            } else if (ex instanceof PostNotFoundException) {
-                exchange.getResponse().setStatusCode(HttpStatus.NOT_FOUND);
-
-                // marks the response as complete and forbids writing to it
-                return exchange.getResponse().setComplete();
-            }
-            return Mono.error(ex);
-        };
-    }
-
-    @Getter
-    @ToString
-    static class Errors implements Serializable {
-        private String code;
-        private String message;
-        private List<Error> errors = new ArrayList<>();
-
-        @JsonCreator
-        Errors(String code, String message) {
-            this.code = code;
-            this.message = message;
-        }
-
-        public void add(String path, String code, String message) {
-            this.errors.add(new Error(path, code, message));
-        }
-    }
-
-    @Getter
-    @ToString
-    static class Error implements Serializable {
-        private String path;
-        private String code;
-        private String message;
-
-        @JsonCreator
-        Error(String path, String code, String message) {
-            this.path = path;
-            this.code = code;
-            this.message = message;
-        }
-
     }
 }
 
