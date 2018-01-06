@@ -30,6 +30,9 @@ public class PostControllerTest {
     @MockBean
     PostRepository posts;
 
+    @MockBean
+    CommentRepository comments;
+
     @Test
     public void getAllPosts_shouldBeOk() {
         given(posts.findAll())
@@ -182,6 +185,42 @@ public class PostControllerTest {
         verify(this.posts, times(1)).findById(anyString());
         verify(this.posts, times(1)).delete(any(Post.class));
         verifyNoMoreInteractions(this.posts);
+    }
+
+    @Test
+    public void getCommentsByPostId_shouldBeOk() {
+        given(comments.findByPost(new PostId("1")))
+            .willReturn(Flux.just(Comment.builder().id("comment-id-1").content("comment of my first post").build()));
+
+        client.get().uri("/posts/1/comments").exchange()
+            .expectStatus().isOk()
+            .expectBody()
+            .jsonPath("$[0].id").isEqualTo("comment-id-1")
+            .jsonPath("$[0].content").isEqualTo("comment of my first post");
+
+        verify(this.comments, times(1)).findByPost(any(PostId.class));
+        verifyNoMoreInteractions(this.comments);
+
+    }
+
+    @Test
+    public void createCommentOfPost_shouldBeOk() {
+
+        Comment comment = Comment.builder().id("comment-id-1").content("content of my first post").createdDate(LocalDateTime.now()).build();
+        given(comments.save(comment))
+            .willReturn(Mono.just(comment));
+
+        CommentForm form = CommentForm.builder().content("comment of my first post").build();
+        client.post().uri("/posts/1/comments").body(BodyInserters.fromObject(form))
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody()
+            .jsonPath("$.id").isEqualTo("comment-id-1")
+            .jsonPath("$.content").isEqualTo("content of my first post")
+            .jsonPath("$.createdDate").isNotEmpty();
+
+        verify(this.comments, times(1)).save(any(Comment.class));
+        verifyNoMoreInteractions(this.comments);
     }
 
 }

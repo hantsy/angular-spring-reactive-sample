@@ -61,11 +61,16 @@ public class Application {
 
 @Configuration
 @Slf4j
-class WebConfig implements WebFluxConfigurer{
+class WebConfig implements WebFluxConfigurer {
 
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**");
     }
+}
+
+@Configuration
+@Slf4j
+class WebExceptionHandlingConfig {
 
     // see: https://stackoverflow.com/questions/47631243/spring-5-reactive-webexceptionhandler-is-not-getting-called
     // and https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/html/boot-features-developing-web-applications.html#boot-features-webflux-error-handling
@@ -102,7 +107,7 @@ class WebConfig implements WebFluxConfigurer{
                 // marks the response as complete and forbids writing to it
                 return exchange.getResponse().setComplete();
             }
-            return Mono.empty();
+            return Mono.error(ex);
         };
     }
 

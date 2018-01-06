@@ -16,19 +16,18 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-class Post implements Serializable {
+public class Comment implements Serializable{
 
     @Id
     private String id;
-
-    @NotBlank
-    private String title;
 
     @NotBlank
     private String content;
 
     @CreatedDate
     private LocalDateTime createdDate;
+
+    private PostId post;
 
     @CreatedBy
     private Username author;

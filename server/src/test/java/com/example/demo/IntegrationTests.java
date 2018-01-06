@@ -128,6 +128,23 @@ public class IntegrationTests {
             .jsonPath("$.content").isEqualTo(content)
             .jsonPath("$.createdDate").isNotEmpty();
 
+        // added comment
+        client
+            .mutate().filter(basicAuthentication("user", "password")).build()
+            .post()
+            .uri("/posts/" + id + "/comments")
+            .body(BodyInserters.fromObject(Comment.builder().content("my comments").build()))
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody().jsonPath("$.id").isNotEmpty();
+
+        client
+            .get()
+            .uri("/posts/" + id + "/comments")
+            .exchange()
+            .expectStatus().isOk()
+            .expectBodyList(Comment.class).hasSize(1);
+
         Post updated = client
             .mutate().filter(basicAuthentication("user", "password")).build()
             .put()

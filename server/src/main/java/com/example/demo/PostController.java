@@ -16,8 +16,11 @@ class PostController {
 
     private final PostRepository posts;
 
-    public PostController(PostRepository posts) {
+    private final CommentRepository comments;
+
+    public PostController(PostRepository posts, CommentRepository comments) {
         this.posts = posts;
+        this.comments = comments;
     }
 
     @GetMapping("")
@@ -68,6 +71,21 @@ class PostController {
         return this.posts.findById(id)
             .switchIfEmpty(Mono.error(new PostNotFoundException(id)))
             .flatMap(this.posts::delete);
+    }
+
+    @GetMapping("/{id}/comments")
+    public Flux<Comment> getCommentsOf(@PathVariable("id") String id) {
+        return this.comments.findByPost(new PostId(id));
+    }
+
+    @PostMapping("/{id}/comments")
+    public Mono<Comment> createCommentsOf(@PathVariable("id") String id, @RequestBody @Valid CommentForm form) {
+        Comment comment = Comment.builder()
+            .post(new PostId(id))
+            .content(form.getContent())
+            .build();
+
+        return this.comments.save(comment);
     }
 
 }

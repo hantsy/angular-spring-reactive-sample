@@ -131,10 +131,27 @@ public class ApplicationTests {
             .jsonPath("$.content").isEqualTo(content)
             .jsonPath("$.createdDate").isNotEmpty();
 
+        // added comment
+        client
+            .mutate().filter(basicAuthentication("user", "password")).build()
+            .post()
+            .uri("/posts/" + id + "/comments")
+            .body(BodyInserters.fromObject(Comment.builder().content("my comments").build()))
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody().jsonPath("$.id").isNotEmpty();
+
+        client
+            .get()
+            .uri("/posts/" + id + "/comments")
+            .exchange()
+            .expectStatus().isOk()
+            .expectBodyList(Comment.class).hasSize(1);
+
         Post updated = client
             .mutate().filter(basicAuthentication("user", "password")).build()
             .put()
-            .uri("/posts/"+id)
+            .uri("/posts/" + id)
             .body(BodyInserters.fromObject(Post.builder().title("updated title").content("updated content").build()))
             .exchange()
             .expectStatus().isOk()
@@ -147,14 +164,14 @@ public class ApplicationTests {
         client
             .mutate().filter(basicAuthentication("user", "password")).build()
             .delete()
-            .uri("/posts/"+id)
+            .uri("/posts/" + id)
             .exchange()
             .expectStatus().isForbidden();
 
         client
             .mutate().filter(basicAuthentication("admin", "password")).build()
             .delete()
-            .uri("/posts/"+id)
+            .uri("/posts/" + id)
             .exchange()
             .expectStatus().isNoContent();
 
