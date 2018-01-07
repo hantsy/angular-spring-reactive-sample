@@ -1,0 +1,13 @@
+<div class="card">
+  <div class="card-header">
+    <h1 class="card-title">{{'edit-post'}} </h1>
+    <p>created at: {{post.createdDate|date:'short'}} &bull; {{post.author.username}}</p>
+    <p><small>all fields marked with star are required.</small></p>
+  </div>
+  <div class="card-block">
+    <app-post-form [post]="post" (onSaved)="onPostUpdated($event)"></app-post-form>
+  </div>
+  <div class="card-footer">
+    back to <a [routerLink]="['','posts']">{{'post-list'}}</a>
+  </div>
+</div>

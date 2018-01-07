@@ -1,0 +1,29 @@
+<h3>Add User Dialog</h3>
+<form #form="ngForm" (ngSubmit)="dialogRef.close(form.value)" ngNativeValidate>
+  <div fxLayout="column" fxLayoutGap="8px">
+    <div fxLayout="row" fxLayoutAlign="start center">
+      <mat-icon svgIcon="avatars:{{selectedAvatar}}" class="avatar"></mat-icon>
+      <mat-form-field>
+        <mat-select name="avatar" fxFlex placeholder="Avatar" [(ngModel)]="selectedAvatar">
+          <mat-option *ngFor="let avatar of avatars; let i = index;" [value]="avatar">Avatar - {{i + 1}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <mat-form-field>
+      <input matInput ngModel name="name" placeholder="Full name" required>
+    </mat-form-field>
+
+    <mat-form-field>
+      <textarea matInput ngModel name="details" placeholder="Details" rows="15" cols="60" required></textarea>
+    </mat-form-field>
+
+    <div fxLayout="row" fxLayoutGap="24px">
+      <mat-checkbox ngModel name="isAdmin">Is Admin?</mat-checkbox>
+      <mat-checkbox ngModel name="isCool">Is Cool?</mat-checkbox>
+    </div>
+  </div>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
+    <button mat-button color="accent">Save User</button>
+  </mat-dialog-actions>
+</form>

@@ -24,11 +24,13 @@ class DataInitializer {
 
     private final PostRepository posts;
     private final UserRepository users;
+    private final CommentRepository comments;
     private final PasswordEncoder passwordEncoder;
 
-    public DataInitializer(PostRepository posts, UserRepository users, PasswordEncoder passwordEncoder) {
+    public DataInitializer(PostRepository posts, UserRepository users, CommentRepository comments, PasswordEncoder passwordEncoder) {
         this.posts = posts;
         this.users = users;
+        this.comments = comments;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -36,6 +38,7 @@ class DataInitializer {
     public void init() {
         initPosts();
         initUsers();
+        initComments();
     }
 
     private void initUsers() {
@@ -70,7 +73,7 @@ class DataInitializer {
     }
 
     private void initPosts() {
-        log.info("start data initialization  ...");
+        log.info("start post data initialization  ...");
         this.posts
             .deleteAll()
             .thenMany(
@@ -84,7 +87,19 @@ class DataInitializer {
             .subscribe(
                 null,
                 null,
-                () -> log.info("done initialization...")
+                () -> log.info("done post initialization...")
+            );
+    }
+
+    private void initComments() {
+        log.info("start comments data initialization  ...");
+        this.posts
+            .deleteAll()
+            .log()
+            .subscribe(
+                null,
+                null,
+                () -> log.info("done comments initialization...")
             );
     }
 

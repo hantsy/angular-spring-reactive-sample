@@ -138,6 +138,7 @@ public class IntegrationTests {
             .expectStatus().isOk()
             .expectBody().jsonPath("$.id").isNotEmpty();
 
+        // get comments of post
         client
             .get()
             .uri("/posts/" + id + "/comments")
