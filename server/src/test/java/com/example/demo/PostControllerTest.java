@@ -189,14 +189,14 @@ public class PostControllerTest {
 
     @Test
     public void getCommentsByPostId_shouldBeOk() {
-        when(comments.findByPost(any()))
-            .thenReturn(Flux.just(Comment.builder().id("comment-id-1").content("comment of my first post").build()));
+        given(comments.findByPost(any()))
+            .willReturn(Flux.just(Comment.builder().id("comment-id-1").content("comment of my first post").build()));
 
         client.get().uri("/posts/1/comments").exchange()
-              .expectStatus().isOk()
-              .expectBody()
-              .jsonPath("$[0].id").isEqualTo("comment-id-1")
-              .jsonPath("$[0].content").isEqualTo("comment of my first post");
+            .expectStatus().isOk()
+            .expectBody()
+            .jsonPath("$[0].id").isEqualTo("comment-id-1")
+            .jsonPath("$[0].content").isEqualTo("comment of my first post");
 
         verify(this.comments, times(1)).findByPost(any(PostId.class));
         verifyNoMoreInteractions(this.comments);
