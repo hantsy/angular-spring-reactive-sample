@@ -189,7 +189,7 @@ public class PostControllerTest {
 
     @Test
     public void getCommentsByPostId_shouldBeOk() {
-        given(comments.findByPost(new PostId("1")))
+        given(comments.findByPost(any()))
             .willReturn(Flux.just(Comment.builder().id("comment-id-1").content("comment of my first post").build()));
 
         client.get().uri("/posts/1/comments").exchange()
