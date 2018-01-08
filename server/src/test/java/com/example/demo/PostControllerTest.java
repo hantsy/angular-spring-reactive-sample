@@ -189,7 +189,7 @@ public class PostControllerTest {
 
     @Test
     public void getCommentsByPostId_shouldBeOk() {
-        given(comments.findByPost(new PostId("1")))
+        given(comments.findByPost(any(PostId.class)))
             .willReturn(Flux.just(Comment.builder().id("comment-id-1").post(new PostId("1")).content("comment of my first post").build()));
 
         client.get().uri("/posts/1/comments").exchange()
@@ -206,7 +206,7 @@ public class PostControllerTest {
     @Test
     public void createCommentOfPost_shouldBeOk() {
 
-        given(comments.save(Comment.builder().post(new PostId("1")).content("content of my first post").createdDate(LocalDateTime.now()).build()))
+        given(comments.save(any(Comment.class)))
             .willReturn(Mono.just(Comment.builder().id("comment-id-1").post(new PostId("1")).content("content of my first post").createdDate(LocalDateTime.now()).build()));
 
         CommentForm form = CommentForm.builder().content("comment of my first post").build();
