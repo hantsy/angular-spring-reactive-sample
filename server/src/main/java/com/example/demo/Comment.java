@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 @Document
 @Data
-@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
