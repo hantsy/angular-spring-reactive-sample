@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Post } from '../shared/post.model';
 import { Subscription } from 'rxjs/Subscription';
 import { PostService } from '../shared/post.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-post-list',
@@ -14,7 +15,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   posts: Post[];
   sub: Subscription;
 
-  constructor(private postService: PostService) {
+  constructor(private router: Router, private postService: PostService) {
   }
 
   search() {
@@ -39,6 +40,10 @@ export class PostListComponent implements OnInit, OnDestroy {
   clearTerm($event) {
     console.log('clear term:' + $event);
     this.q = null;
+  }
+
+  addPost() {
+    this.router.navigate(['', 'post', 'new']);
   }
 
   ngOnInit() {

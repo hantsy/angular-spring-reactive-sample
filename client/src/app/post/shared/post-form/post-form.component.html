@@ -1,7 +1,7 @@
 <form id="form" #f="ngForm" name="form" class="form" (ngSubmit)="submit()">
    <p>
-      <mat-input-container>
-          <input fxFlex matInput
+      <mat-input-container fxFlex>
+          <input matInput
            id="title"
            name="title"
            #title="ngModel"
@@ -13,8 +13,8 @@
         </mat-input-container>
    </p>
   <p>
-      <mat-input-container>
-          <textarea fxFlex matInput
+      <mat-input-container fxFlex>
+          <textarea  matInput
             #content="ngModel"
             name="content"
             id="content"

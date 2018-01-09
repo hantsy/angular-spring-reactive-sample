@@ -21,14 +21,6 @@ mat-list-item mat-icon {
   margin: 12px;
 }
 
-.fab-bottom-right {
-  position: fixed;
- /*add z-index*/
-  z-index: 10;
-  right: 16px;
-  bottom: 16px;
-}
-
 .name-container{
   display: flex;
   margin: 25px;
@@ -36,9 +28,7 @@ mat-list-item mat-icon {
 }
 
 router-outlet{
-  display: flex;
-  justify-content: center;
-  flex-direction: row;
+  margin: 0px
 }
 
 /* we don't need this as it makes the sidenav not fill the height by 100% and looks like floating

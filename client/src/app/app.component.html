@@ -46,7 +46,12 @@
         </mat-tab>
       </mat-tab-group> -->
     </mat-sidenav>
-    <div class="content" fxFlex fxLayout="row" fxLayout.sm="column" fxLayoutGap="16px">
+    <div class="content"
+    fxFlex
+    fxLayout="row"
+    fxLayout.sm="column"
+    fxLayoutGap="16px"
+    fxLayoutGap.sm="0">
 
       <!-- <mat-card fxFlex="80">
         <mat-icon svgIcon="avatars:{{selectedUser.avatar}}" class="avatar"></mat-icon>
@@ -66,7 +71,5 @@
     <button mat-menu-item (click)="isDarkTheme = !isDarkTheme">Toggle Theme</button>
   </mat-menu>
 
-  <button mat-fab (click)="openAdminDialog()" class="fab-bottom-right">
-    <mat-icon>add</mat-icon>
-  </button>
+
 </div>
