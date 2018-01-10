@@ -1,8 +1,6 @@
 # Angular Spring Reactive Sample
 
-This application demos building backend RESTful APIs with the newest Reactive stack introduced in Spring 5, and build frontend SPA with Angular 5.
-
-
+This application demonstrate building backend RESTful APIs with the newest Reactive stack introduced in Spring 5, and creating the frontend SPA with Angular 5.
 
 ## Project structure
 
