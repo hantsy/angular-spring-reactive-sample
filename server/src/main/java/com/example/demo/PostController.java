@@ -78,6 +78,12 @@ class PostController {
         return this.comments.findByPost(new PostId(id));
     }
 
+    @GetMapping("/{id}/comments/count")
+    public Mono<Count> getCommentsCountOf(@PathVariable("id") String id) {
+        return this.comments.findByPost(new PostId(id)).count().log().map(Count::new);
+    }
+
+
     @PostMapping("/{id}/comments")
     public Mono<Comment> createCommentsOf(@PathVariable("id") String id, @RequestBody @Valid CommentForm form) {
         Comment comment = Comment.builder()
