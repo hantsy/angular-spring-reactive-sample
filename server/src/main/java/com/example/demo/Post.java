@@ -10,6 +10,8 @@ import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import static com.example.demo.Post.Status.DRAFT;
+
 @Document
 @Data
 @ToString
@@ -27,9 +29,17 @@ class Post implements Serializable {
     @NotBlank
     private String content;
 
+    @Builder.Default
+    private Status status = DRAFT;
+
     @CreatedDate
     private LocalDateTime createdDate;
 
     @CreatedBy
     private Username author;
+
+    enum Status {
+        DRAFT,
+        PUBLISHED
+    }
 }

@@ -150,6 +150,27 @@ public class PostControllerTest {
     }
 
     @Test
+    public void updatePostStatus_shouldBeOk() {
+        Post post = Post.builder().id("1").title("my first post").content("content of my first post").createdDate(LocalDateTime.now()).build();
+
+        given(posts.findById("1"))
+            .willReturn(Mono.just(post));
+
+        post.setStatus(Post.Status.PUBLISHED);
+
+        given(posts.save(post))
+            .willReturn(Mono.just(Post.builder().id("1").title("updated title").content("updated content").createdDate(LocalDateTime.now()).build()));
+
+        client.put().uri("/posts/1/status").body(BodyInserters.fromObject(new StatusUpdateRequest("PUBLISHED")))
+            .exchange()
+            .expectStatus().isNoContent();
+
+        verify(this.posts, times(1)).findById(anyString());
+        verify(this.posts, times(1)).save(any(Post.class));
+        verifyNoMoreInteractions(this.posts);
+    }
+
+    @Test
     public void createPost_shouldBeOk() {
         Post post = Post.builder().title("my first post").content("content of my first post").build();
         given(posts.save(post))

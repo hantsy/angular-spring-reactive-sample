@@ -27,18 +27,19 @@ class PostController {
     public Flux<Post> all(@RequestParam(value = "q", required = false) String q,
                           @RequestParam(value = "page", defaultValue = "0") long page,
                           @RequestParam(value = "size", defaultValue = "10") long size) {
-        return filterByKeyword(q)
+        return filterPublishedPostsByKeyword(q)
             .sort(comparing(Post::getCreatedDate).reversed())
             .skip(page * size).take(size);
     }
 
     @GetMapping(value = "/count")
     public Mono<Count> count(@RequestParam(value = "q", required = false) String q) {
-        return filterByKeyword(q).count().log().map(Count::new);
+        return filterPublishedPostsByKeyword(q).count().log().map(Count::new);
     }
 
-    private Flux<Post> filterByKeyword(String q) {
+    private Flux<Post> filterPublishedPostsByKeyword(String q) {
         return this.posts.findAll()
+            .filter(p -> Post.Status.PUBLISHED == p.getStatus())
             .filter(p -> Optional.ofNullable(q).map(key -> p.getTitle().contains(key) || p.getContent().contains(key)).orElse(true));
     }
 
@@ -63,6 +64,21 @@ class PostController {
                 return p;
             })
             .flatMap(this.posts::save);
+    }
+
+    @PutMapping("/{id}/status")
+    @ResponseStatus(NO_CONTENT)
+    public Mono<Void> updateStatus(@PathVariable("id") String id, @RequestBody @Valid StatusUpdateRequest status) {
+        return this.posts.findById(id)
+            .switchIfEmpty(Mono.error(new PostNotFoundException(id)))
+            .map(p -> {
+                // TODO: check if the current user is author or it has ADMIN role.
+                p.setStatus(Post.Status.valueOf(status.getStatus()));
+
+                return p;
+            })
+            .flatMap(this.posts::save)
+            .flatMap((p)->Mono.empty());
     }
 
     @DeleteMapping("/{id}")
