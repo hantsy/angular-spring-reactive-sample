@@ -537,7 +537,7 @@ private ObjectMapper objectMapper;
 
 For the bean validations, we can convert the `WebExchangeBindException` to a `UnprocessableEntity` error to client, please see the complete codes of [`RestExceptionHandler`](https://github.com/hantsy/angular-spring-reactive-sample/blob/master/server/src/main/java/com/example/demo/RestExceptionHandler.java) for more details.
 
-I have added some features mentioned at the beginning of this post, such as comment endpoints, and also tried to add pagination, and data auditing feature when it is ready.
+In the backend codes, I have added some features mentioned at the beginning of this post, such as comment endpoints, and also tried to add pagination, and data auditing feature(when it is ready).
 
 Next let's try to build a simple Angular frontend application to shake hands with the backend APIs.
 
@@ -649,11 +649,11 @@ ng g c auth/signin --module auth
 
 To simplify the coding work, I port my [former Angular 2.x work](https://github.com/hantsy/angular2-material-sample) to this project, more about the Angular development steps, check the [wiki pages](https://github.com/hantsy/angular2-sample/wiki).
 
-Angular 4.x introduced new `HttpClientModule`(located in `@angular/common/http`) instead of the original `@angular/http` module. I updated the codes in this project.
+Angular 4.x introduced new `HttpClientModule`(located in `@angular/common/http`) instead of the original `@angular/http` module. I updated the original codes to use `HttpClientModule` to interact with REST APIs in this project.
 
 ### Interact REST APIs with HttpClientModule
 
-Let's have a look at the refreshed `PostService`. Here we use new `HttpClient` to replace the legacy `Http`, and the methods return an `Observable` by default.
+Let's have a look at the refreshed `PostService`. Here we use new `HttpClient` to replace the legacy `Http`, the usage of `HttpClient` is similar with `Http`, the most difference is its methods return an `Observable` by default.
 
 ```typescript
 const apiUrl = environment.baseApiUrl + '/posts';
@@ -701,7 +701,7 @@ export class PostService {
 }
 ```
 
-Another awesome feature of the `HttpClientModule` is introducing the long-awaited `HttpInterceptor` officially.
+Another awesome feature of the `HttpClientModule` is it added the long-awaited `HttpInterceptor` officially.
 
 We do not need `@covalent/http` to [get interceptor support](https://github.com/hantsy/angular2-sample/wiki/auth-http) now.
 
