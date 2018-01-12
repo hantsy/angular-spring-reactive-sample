@@ -1,3 +1,16 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Angular Spring Reactive Sample](#angular-spring-reactive-sample)
+  - [Project structure](#project-structure)
+  - [Build](#build)
+    - [Server](#server)
+    - [Client](#client)
+  - [Contribute](#contribute)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Angular Spring Reactive Sample
 
 This application demonstrate building backend RESTful APIs with the newest Reactive stack introduced in Spring 5, and creating the frontend SPA with Angular 5.
