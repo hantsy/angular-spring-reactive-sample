@@ -80,7 +80,7 @@ class DataInitializer {
                 Flux
                     .just("Post one", "Post two")
                     .flatMap(
-                        title -> this.posts.save(Post.builder().title(title).content("content of " + title).build())
+                        title -> this.posts.save(Post.builder().title(title).content("content of " + title).status(Post.Status.PUBLISHED).build())
                     )
             )
             .log()

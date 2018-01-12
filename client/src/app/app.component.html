@@ -48,10 +48,11 @@
     </mat-sidenav>
     <div class="content"
     fxFlex
-    fxLayout="row"
+    fxFlex.gt-sm="66"
+    fxLayout="row space-around"
+    fxLayoutGap="15px"
     fxLayout.sm="column"
-    fxLayoutGap="16px"
-    fxLayoutGap.sm="0">
+    fxLayoutGap.sm="0px">
 
       <!-- <mat-card fxFlex="80">
         <mat-icon svgIcon="avatars:{{selectedUser.avatar}}" class="avatar"></mat-icon>
@@ -63,7 +64,8 @@
         <mat-slide-toggle [(ngModel)]="selectedUser.isAdmin">Is Admin?</mat-slide-toggle>
         <mat-slide-toggle [(ngModel)]="selectedUser.isCool">Is Cool?</mat-slide-toggle>
       </mat-card> -->
-      <router-outlet></router-outlet>
+      <router-outlet fxFlex>
+    </router-outlet>
 
     </div>
   </mat-sidenav-container>
