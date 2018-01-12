@@ -96,7 +96,7 @@ class SecurityConfig {
                     .pathMatchers(HttpMethod.GET, "/posts/**").permitAll()
                     .pathMatchers(HttpMethod.DELETE, "/posts/**").hasRole("ADMIN")
                     .pathMatchers("/posts/**").authenticated()
-                    .pathMatchers("/user").authenticated()
+                    .pathMatchers("/auth/**").authenticated()
                     .pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
                     .anyExchange().permitAll()
                 .and()

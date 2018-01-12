@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Mono;
 
 import java.security.Principal;
@@ -38,6 +39,11 @@ public class AuthController {
                             .getAuthorities()));
                     return map;
                 });
+    }
+
+    @GetMapping("/logout")
+    public Mono<Void> logout(WebSession session) {
+        return session.invalidate();
     }
 
 }
