@@ -15,6 +15,8 @@
 
 This application demonstrate building backend RESTful APIs with the newest Reactive stack introduced in Spring 5, and creating the frontend SPA with Angular 5.
 
+**Read the [comprehensive step by step guide](GUIDE.md) to get more details**.
+
 ## Project structure
 
 * client - The client application built with Angular CLI.

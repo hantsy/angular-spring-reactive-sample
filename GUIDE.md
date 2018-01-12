@@ -212,7 +212,7 @@ I have prepared *docker-compose.yml* in the root folder, utilize it, we can boot
 
 Open your terminal, and switch to the root folder of this project, run the following command to start a MongoDB service.
 
-```base
+```bash
 docker-compose up mongodb
 ```
 
@@ -746,7 +746,7 @@ export class AuthInterceptor implements HttpInterceptor {
 }
 ```
 
-Compare the http interceptor provided in `@covalent/http`, the official `HttpInterceptor` is more flexible, and it adopts the middleware concept.
+Compare the HTTP interceptor provided in `@covalent/http`, the official `HttpInterceptor` is more flexible, and it adopts the middleware concept.
 
 ## Source codes
 
