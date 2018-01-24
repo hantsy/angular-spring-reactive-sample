@@ -1,11 +1,13 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from './auth-guard';
 import { AuthService } from './auth.service';
 import { TokenStorage } from './token-storage';
 import { RouterModule } from '@angular/router';
 import { AuthInterceptor } from './auth-inteceptor';
+import { LoadGuard } from './load-guard';
+import { TokenInterceptor } from './token-inteceptor';
 
 @NgModule({
   imports: [
@@ -15,8 +17,14 @@ import { AuthInterceptor } from './auth-inteceptor';
   ],
   providers: [
     AuthGuard,
+    LoadGuard,
     AuthService,
     TokenStorage,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

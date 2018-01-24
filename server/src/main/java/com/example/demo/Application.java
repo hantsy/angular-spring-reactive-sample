@@ -52,7 +52,7 @@ class WebConfig implements WebFluxConfigurer {
 }
 
 @Configuration
-@EnableMongoAuditing
+@EnableMongoAuditing//auditing does not work in reactive now.
 class MongoConfig {
 
     @Bean

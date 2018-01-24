@@ -15,6 +15,7 @@ import { CommentFormComponent } from './post-details/comment/comment-form.compon
 import { CommentPanelComponent } from './post-details/comment/comment-panel.component';
 import { PostFormComponent } from './shared/post-form/post-form.component';
 import { PostService } from './shared/post.service';
+import { PostDetailsResolve } from './shared/post-details-resolve';
 
 @NgModule({
   imports: [
@@ -47,6 +48,7 @@ import { PostService } from './shared/post.service';
   ],
   providers: [
     PostService,
+    PostDetailsResolve
   ]
 })
 export class PostModule { }

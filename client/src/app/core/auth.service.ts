@@ -68,6 +68,7 @@ export class AuthService {
     console.log(headers);
     return this.http.get<User>(`${apiUrl}/user`, { headers })
       .do(data => {
+        console.log('do::');
         console.log(data);
         this.store.setState({
           user: data, authenticated: Boolean(data)
@@ -96,9 +97,14 @@ export class AuthService {
   }
 
   signout() {
-    // reset the initial values
-    this.jwt.destroy();
-    this.store.purge();
+    this.http.get<any>(`${apiUrl}/logout`).subscribe(
+      (data) => {
+        // reset the initial values
+        this.jwt.destroy();
+        this.store.purge();
+      }
+    );
+
   }
 
   currentUser(): Observable<User> {

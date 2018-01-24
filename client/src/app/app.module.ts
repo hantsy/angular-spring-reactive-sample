@@ -8,6 +8,7 @@ import { SharedModule } from './shared/shared.module';
 import { HomeModule } from './home/home.module';
 import { AppRoutingModule } from './app-routing.module';
 import { DialogComponent } from './dialog/dialog.component';
+import { LoadGuard } from './core/load-guard';
 
 @NgModule({
   declarations: [AppComponent, DialogComponent],

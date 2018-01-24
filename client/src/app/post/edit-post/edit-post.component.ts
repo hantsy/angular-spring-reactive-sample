@@ -11,30 +11,21 @@ import { PostService } from '../shared/post.service';
 })
 export class EditPostComponent implements OnInit, OnDestroy {
   post: Post = { title: '', content: '' };
-  sub: Subscription;
   slug: string;
 
-  constructor(private postService: PostService, private router: Router, private route: ActivatedRoute) { }
+  constructor(private router: Router, private route: ActivatedRoute) { }
 
   onPostUpdated(event) {
     console.log('post was updated!' + event);
     if (event) {
-      this.router.navigate(['', 'posts']);
+      this.router.navigate(['', 'post', 'list']);
     }
   }
 
   ngOnInit() {
-    this.sub = this.route.params
-      .flatMap(params => {
-        this.slug = params['slug'];
-        return this.postService.getPost(this.slug);
-      })
-      .subscribe((res: Post) => this.post = res);
+    this.post = this.route.snapshot.data['post'];
   }
 
   ngOnDestroy() {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
   }
 }
