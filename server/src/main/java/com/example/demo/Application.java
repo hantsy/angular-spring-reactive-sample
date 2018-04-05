@@ -46,6 +46,7 @@ public class Application {
 @Slf4j
 class WebConfig implements WebFluxConfigurer {
 
+    @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**");
     }
@@ -61,8 +62,8 @@ class MongoConfig {
             .map(SecurityContext::getAuthentication)
             .log()
             .filter(a -> a != null && a.isAuthenticated())
-            .map(Authentication::getPrincipal)
-            .cast(UserDetails.class)
+//            .map(Authentication::getPrincipal)
+//            .cast(UserDetails.class)
             .map(auth -> new Username(auth.getName()))
             .switchIfEmpty(Mono.empty())
             .blockOptional();

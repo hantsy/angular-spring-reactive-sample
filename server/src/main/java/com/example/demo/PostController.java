@@ -25,8 +25,8 @@ class PostController {
 
     @GetMapping("")
     public Flux<Post> all(@RequestParam(value = "q", required = false) String q,
-                          @RequestParam(value = "page", defaultValue = "0") long page,
-                          @RequestParam(value = "size", defaultValue = "10") long size) {
+        @RequestParam(value = "page", defaultValue = "0") long page,
+        @RequestParam(value = "size", defaultValue = "10") long size) {
         return filterPublishedPostsByKeyword(q)
             .sort(comparing(Post::getCreatedDate).reversed())
             .skip(page * size).take(size);
@@ -40,7 +40,11 @@ class PostController {
     private Flux<Post> filterPublishedPostsByKeyword(String q) {
         return this.posts.findAll()
             .filter(p -> Post.Status.PUBLISHED == p.getStatus())
-            .filter(p -> Optional.ofNullable(q).map(key -> p.getTitle().contains(key) || p.getContent().contains(key)).orElse(true));
+            .filter(
+                p -> Optional.ofNullable(q)
+                    .map(key -> p.getTitle().contains(key) || p.getContent().contains(key))
+                    .orElse(true)
+            );
     }
 
     @PostMapping("")
@@ -78,7 +82,7 @@ class PostController {
                 return p;
             })
             .flatMap(this.posts::save)
-            .flatMap((p)->Mono.empty());
+            .flatMap((p) -> Mono.empty());
     }
 
     @DeleteMapping("/{id}")
@@ -98,7 +102,6 @@ class PostController {
     public Mono<Count> getCommentsCountOf(@PathVariable("id") String id) {
         return this.comments.findByPost(new PostId(id)).count().log().map(Count::new);
     }
-
 
     @PostMapping("/{id}/comments")
     public Mono<Comment> createCommentsOf(@PathVariable("id") String id, @RequestBody @Valid CommentForm form) {
