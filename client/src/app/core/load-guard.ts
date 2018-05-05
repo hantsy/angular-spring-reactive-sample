@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanLoad, Route, Router } from '@angular/router';
 import { AuthService } from './auth.service';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class LoadGuard implements CanLoad {
@@ -8,12 +9,14 @@ export class LoadGuard implements CanLoad {
 
   canLoad(route: Route) {
     console.log('call canLoad guard.');
-    this.authService.isAuthenticated().do(auth => {
+    this.authService.isAuthenticated().pipe(
+      tap(auth => {
       if (!auth) {
         this.router.navigate(['', 'auth', 'signin']);
         return false;
       }
-    });
+    })
+  );
     return true;
   }
 }

@@ -3,23 +3,23 @@
   <mat-card-content>
     <form #loginForm="ngForm" (ngSubmit)="submit()">
       <p>
-        <mat-input-container fxFlex>
+        <mat-form-field fxFlex>
           <input type="text" matInput #userControl="ngModel" placeholder="Username" type="text" maxlength="30" name="username" [(ngModel)]="username"
             required>
-        </mat-input-container>
+        </mat-form-field>
         <mat-hint fxLayoutAlign="start" *ngIf="userControl.invalid && !userControl.pristine">
           <span *ngIf="passControl.hasError('required')" class="tc-red-600">username is required</span>
         </mat-hint>
       </p>
 
       <p>
-        <mat-input-container fxFlex>
+        <mat-form-field fxFlex>
           <input type="password" matInput #passControl="ngModel" placeholder="Password" type="password" name="password" [(ngModel)]="password"
             required>
           <mat-error fxLayoutAlign="start" *ngIf="passControl.hasError('required')">
             Password is <strong>Required</strong>.
           </mat-error>
-        </mat-input-container>
+        </mat-form-field>
 
       </p>
 

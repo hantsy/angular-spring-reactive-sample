@@ -11,7 +11,8 @@ import {
   HttpEvent,
   HttpErrorResponse
 } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { TokenStorage } from './token-storage';
 import { Router } from '@angular/router';
 
@@ -25,7 +26,7 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler):
     Observable<HttpSentEvent | HttpHeaderResponse | HttpProgressEvent | HttpResponse<any> | HttpUserEvent<any>> {
 
-    return next.handle(req).do(
+    return next.handle(req).pipe(tap(
       (event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
           const token = event.headers.get(TOKEN_HEADER_KEY);
@@ -44,7 +45,7 @@ export class AuthInterceptor implements HttpInterceptor {
           }
         }
       }
-    );
+    ));
   }
 
 }

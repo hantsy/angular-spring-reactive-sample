@@ -1,13 +1,10 @@
 import { Injectable, Inject } from '@angular/core';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
+import { Observable ,  BehaviorSubject ,  ReplaySubject,  } from 'rxjs';
+import { tap , distinctUntilChanged, map } from 'rxjs/operators';
+
 import { User } from './user.model';
 import { TokenStorage } from './token-storage';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
@@ -29,7 +26,7 @@ const _store = new BehaviorSubject<State>(defaultState);
 
 class Store {
   private _store = _store;
-  changes = this._store.asObservable().distinctUntilChanged();
+  changes = this._store.asObservable().pipe(distinctUntilChanged());
 
   setState(state: State) {
     console.log('update user state:' + JSON.stringify(state));
@@ -67,13 +64,14 @@ export class AuthService {
     console.log('attempAuth ::');
     console.log(headers);
     return this.http.get<User>(`${apiUrl}/user`, { headers })
-      .do(data => {
+      .pipe(
+      tap(data => {
         console.log('do::');
         console.log(data);
         this.store.setState({
           user: data, authenticated: Boolean(data)
         });
-      }
+      })
       );
   }
 
@@ -108,11 +106,15 @@ export class AuthService {
   }
 
   currentUser(): Observable<User> {
-    return this.store.changes.map(data => data.user);
+    return this.store.changes.pipe(
+      map(data => data.user)
+    );
   }
 
   isAuthenticated(): Observable<boolean> {
-    return this.store.changes.map(data => data.authenticated);
+    return this.store.changes.pipe(
+      map(data => data.authenticated)
+    );
   }
 
 }

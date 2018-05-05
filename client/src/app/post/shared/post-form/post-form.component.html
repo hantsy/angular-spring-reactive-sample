@@ -1,6 +1,6 @@
 <form id="form" #f="ngForm" name="form" class="form" (ngSubmit)="submit()">
    <p>
-      <mat-input-container fxFlex>
+      <mat-form-field fxFlex>
           <input matInput
            id="title"
            name="title"
@@ -10,10 +10,10 @@
           <mat-error align="start" *ngIf="title.hasError('required')">
             Post Title is required
           </mat-error>
-        </mat-input-container>
+        </mat-form-field>
    </p>
   <p>
-      <mat-input-container fxFlex>
+      <mat-form-field fxFlex>
           <textarea  matInput
             #content="ngModel"
             name="content"
@@ -29,7 +29,7 @@
           <mat-error align="start" *ngIf="content.hasError('minlength')">
             At least 10 chars
           </mat-error>
-      </mat-input-container>
+      </mat-form-field>
   </p>
   <p>
       <button mat-button mat-raised-button color="primary" type="submit" [disabled]="f.invalid || f.pending">  {{'save'}}</button>

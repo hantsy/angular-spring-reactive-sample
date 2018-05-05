@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { Observable, Subscription } from 'rxjs/Rx';
+import { Observable, Subscription, forkJoin } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
 import { PostService } from '../shared/post.service';
 import { Post } from '../shared/post.model';
 import { Comment } from '../shared/comment.model';
@@ -27,10 +28,13 @@ export class PostDetailsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     console.log('calling ngOnInit::PostDetailsComponent... ');
     this.sub = this.route.params
-      .flatMap(params => {
-        this.slug = params['slug'];
-        return Observable.forkJoin(this.postService.getPost(this.slug), this.postService.getCommentsOfPost(this.slug));
-      }).subscribe((res: Array<any>) => {
+      .pipe(
+        flatMap(params => {
+          this.slug = params['slug'];
+          return forkJoin(this.postService.getPost(this.slug), this.postService.getCommentsOfPost(this.slug));
+        })
+      )
+      .subscribe((res: Array<any>) => {
         console.log(res);
         this.post = res[0];
         this.comments = res[1];

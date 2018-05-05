@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { Post } from './post.model';
 import { Comment } from './comment.model';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { HttpParams } from '@angular/common/http';
