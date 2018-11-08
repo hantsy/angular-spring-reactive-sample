@@ -42,11 +42,6 @@ public class Application {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    @Bean
-    public ObjectMapper objectMapper(){
-        return Jackson2ObjectMapperBuilder.json().build();
-    }
-
 }
 
 @Configuration

@@ -3,9 +3,13 @@ package com.example.demo;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Flux;
@@ -19,7 +23,14 @@ import static java.util.stream.Collectors.toList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@WebFluxTest(controllers = PostController.class)
+@WebFluxTest(
+    controllers = PostController.class,
+    excludeAutoConfiguration = {
+        ReactiveUserDetailsServiceAutoConfiguration.class,
+        ReactiveSecurityAutoConfiguration.class
+    }
+)
+@Import(JacksonAutoConfiguration.class)
 public class PostControllerTest {
 
     @Autowired
@@ -208,7 +219,7 @@ public class PostControllerTest {
 
     @Test
     public void getCommentsByPostId_shouldBeOk() {
-        given(comments.findByPost( new PostId("1")))
+        given(comments.findByPost(new PostId("1")))
             .willReturn(Flux.just(Comment.builder().id("comment-id-1").post(new PostId("1")).content("comment of my first post").build()));
 
         client.get().uri("/posts/1/comments").exchange()
