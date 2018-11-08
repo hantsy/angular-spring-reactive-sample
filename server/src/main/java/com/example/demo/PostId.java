@@ -1,12 +1,14 @@
 package com.example.demo;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
-@AllArgsConstructor(onConstructor = @__({@JsonCreator}))
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class PostId implements Serializable {
     private String id;
 }

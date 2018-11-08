@@ -1,12 +1,11 @@
 package com.example.demo;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Flux;
@@ -20,7 +19,6 @@ import static java.util.stream.Collectors.toList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
 @WebFluxTest(controllers = PostController.class)
 public class PostControllerTest {
 
@@ -110,7 +108,7 @@ public class PostControllerTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void getPostByNonExistedId_shouldReturn404() {
         given(posts.findById("1"))
             .willReturn(Mono.empty());

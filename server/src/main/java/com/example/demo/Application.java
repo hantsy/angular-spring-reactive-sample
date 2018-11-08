@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -12,6 +11,7 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -44,8 +44,9 @@ public class Application {
 
     @Bean
     public ObjectMapper objectMapper(){
-        return new Jackson2ObjectMapperBuilder().build();
+        return Jackson2ObjectMapperBuilder.json().build();
     }
+
 }
 
 @Configuration
@@ -62,18 +63,18 @@ class WebConfig implements WebFluxConfigurer {
 @EnableMongoAuditing//auditing does not work in reactive now.
 class MongoConfig {
 
-    @Bean
-    public AuditorAware<Username> auditor() {
-        return () -> ReactiveSecurityContextHolder.getContext()
-            .map(SecurityContext::getAuthentication)
-            .log()
-            .filter(a -> a != null && a.isAuthenticated())
-//            .map(Authentication::getPrincipal)
-//            .cast(UserDetails.class)
-            .map(auth -> new Username(auth.getName()))
-            .switchIfEmpty(Mono.empty())
-            .blockOptional();
-    }
+//    @Bean
+//    public AuditorAware<Username> auditor() {
+//        return () -> ReactiveSecurityContextHolder.getContext()
+//            .map(SecurityContext::getAuthentication)
+//            .log()
+//            .filter(a -> a != null && a.isAuthenticated())
+////            .map(Authentication::getPrincipal)
+////            .cast(UserDetails.class)
+//            .map(auth -> new Username(auth.getName()))
+//            .switchIfEmpty(Mono.empty())
+//            .blockOptional();
+//    }
 }
 
 @Configuration
@@ -89,6 +90,7 @@ class SessionConfig {
 }
 
 @Configuration
+@EnableWebFluxSecurity
 class SecurityConfig {
 
     @Bean

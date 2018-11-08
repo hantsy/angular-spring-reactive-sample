@@ -1,24 +1,23 @@
 package com.example.demo;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.springSecurity;
 import static org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class ApplicationTests {
 
@@ -27,13 +26,14 @@ public class ApplicationTests {
 
     WebTestClient client;
 
-    @Before
+    @BeforeEach
     public void setup() {
         client = WebTestClient
             .bindToApplicationContext(context)
             .apply(springSecurity())
             .configureClient()
-            .filter(basicAuthentication())
+            //.defaultHeaders( h-> h.setBasicAuth("user", "password"))
+            //.filter(basicAuthentication())
             .build();
     }
 
