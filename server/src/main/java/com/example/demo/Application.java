@@ -85,7 +85,6 @@ class SessionConfig {
 }
 
 @Configuration
-@EnableWebFluxSecurity
 class SecurityConfig {
 
     @Bean

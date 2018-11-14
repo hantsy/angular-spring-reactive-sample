@@ -6,6 +6,7 @@
 package com.example.demo;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,7 +35,7 @@ class DataInitializer {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @EventListener(value = ContextRefreshedEvent.class)
+    @EventListener(value = ApplicationReadyEvent.class)
     public void init() {
         initPosts();
         initUsers();
