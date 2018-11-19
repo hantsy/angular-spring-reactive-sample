@@ -3,6 +3,7 @@ package com.example.demo;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.http.codec.CodecsAutoConfiguration;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.*;
 public class PostControllerTest {
 
     @TestConfiguration
-    @Import({JacksonAutoConfiguration.class, CodecsAutoConfiguration.class})
+    @ImportAutoConfiguration({JacksonAutoConfiguration.class, CodecsAutoConfiguration.class})
     static class TestConfig{
 
     }
@@ -125,7 +126,6 @@ public class PostControllerTest {
     }
 
     @Test
-    @Disabled
     public void getPostByNonExistedId_shouldReturn404() {
         given(posts.findById("1"))
             .willReturn(Mono.empty());
