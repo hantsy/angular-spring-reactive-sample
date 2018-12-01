@@ -1,17 +1,12 @@
 package com.example.demo;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.http.codec.CodecsAutoConfiguration;
-import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Flux;
@@ -32,13 +27,8 @@ import static org.mockito.Mockito.*;
         ReactiveSecurityAutoConfiguration.class
     }
 )
+@Slf4j
 public class PostControllerTest {
-
-    @TestConfiguration
-    @ImportAutoConfiguration({JacksonAutoConfiguration.class, CodecsAutoConfiguration.class})
-    static class TestConfig{
-
-    }
 
     @Autowired
     WebTestClient client;
@@ -48,6 +38,27 @@ public class PostControllerTest {
 
     @MockBean
     CommentRepository comments;
+
+    @BeforeAll
+    public static void beforeAll() {
+        log.debug("before all...");
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        log.debug("after all...");
+    }
+
+
+    @BeforeEach
+    public void beforeEach() {
+        log.debug("before each...");
+    }
+
+    @AfterEach
+    public void afterEach() {
+        log.debug("after each...");
+    }
 
     @Test
     public void getAllPosts_shouldBeOk() {
