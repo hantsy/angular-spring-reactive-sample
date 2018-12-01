@@ -24,7 +24,8 @@ public class Comment implements Serializable{
     private String content;
 
     @CreatedDate
-    private LocalDateTime createdDate;
+    @Builder.Default
+    private LocalDateTime createdDate = LocalDateTime.now();
 
     private PostId post;
 

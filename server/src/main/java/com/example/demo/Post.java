@@ -33,7 +33,8 @@ class Post implements Serializable {
     private Status status = DRAFT;
 
     @CreatedDate
-    private LocalDateTime createdDate;
+    @Builder.Default
+    private LocalDateTime createdDate = LocalDateTime.now();
 
     @CreatedBy
     private Username author;

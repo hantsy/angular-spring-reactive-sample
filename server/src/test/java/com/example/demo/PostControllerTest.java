@@ -63,7 +63,7 @@ public class PostControllerTest {
     @Test
     public void getAllPosts_shouldBeOk() {
         given(posts.findAll())
-            .willReturn(Flux.just(Post.builder().id("1").title("my first post").content("content of my first post").build()));
+            .willReturn(Flux.just(Post.builder().id("1").title("my first post").content("content of my first post").createdDate(LocalDateTime.now()).status(Post.Status.PUBLISHED).build()));
 
         client.get().uri("/posts").exchange()
             .expectStatus().isOk()
@@ -84,6 +84,7 @@ public class PostControllerTest {
                 .id("" + n)
                 .title("my " + n + " first post")
                 .content("content of my " + n + " first post")
+                .status(Post.Status.PUBLISHED)
                 .createdDate(LocalDateTime.now())
                 .build())
             .collect(toList());
@@ -253,8 +254,8 @@ public class PostControllerTest {
     @Test
     public void createCommentOfPost_shouldBeOk() {
 
-        given(comments.save(Comment.builder().content("comment of my first post").build()))
-            .willReturn(Mono.just(Comment.builder().id("comment-id-1").post(new PostId("1")).content("content of my first post").createdDate(LocalDateTime.now()).build()));
+        given(comments.save(any(Comment.class)))
+            .willReturn(Mono.just(Comment.builder().id("comment-id-1").post(PostId.builder().id("1").build()).content("content of my first post").createdDate(LocalDateTime.now()).build()));
 
         CommentForm form = CommentForm.builder().content("comment of my first post").build();
         client.post().uri("/posts/1/comments").body(BodyInserters.fromObject(form))
