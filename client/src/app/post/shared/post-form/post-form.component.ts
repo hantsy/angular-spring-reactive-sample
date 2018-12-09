@@ -24,7 +24,10 @@ export class PostFormComponent implements OnInit, OnDestroy {
   constructor(private postService: PostService) {}
 
   submit() {
-    const _body = { title: this.post.title, content: this.post.content };
+    const _body = {
+      title: this.post.title,
+      content: this.post.content
+    } as Post;
 
     if (this.post.id) {
       this.postService.updatePost(this.post.id, _body).subscribe(
