@@ -27,35 +27,36 @@ import java.time.LocalDateTime
 @SpringBootApplication
 class DemoApplication
 
-
+// see: https://stackoverflow.com/questions/53743766/the-difference-between-concat-and-thenmany-in-reactor
 fun beans() = beans {
     bean {
         CommandLineRunner {
             println("start data initialization...")
             val posts = ref<PostRepository>();
 
-            Flux.concat(
-                    posts.deleteAll(),
-                    posts.saveAll(
-                            arrayListOf(
-                                    Post(null, "my first post", "content of my first post"),
-                                    Post(null, "my second post", "content of my second post")
+//            Flux.concat(
+//                    posts.deleteAll(),
+//                    posts.saveAll(
+//                            arrayListOf(
+//                                    Post(null, "my first post", "content of my first post"),
+//                                    Post(null, "my second post", "content of my second post")
+//                            )
+//                    )
+//            )
+            posts.deleteAll()
+                    .thenMany<Post>(
+                            posts.saveAll(
+                                    arrayListOf(
+                                            Post(null, "my first post", "content of my first post"),
+                                            Post(null, "my second post", "content of my second post")
+                                    )
                             )
                     )
-            )
-//            posts.deleteAll()
-//                    .thenMany<Post> {
-//                        posts.saveAll(
-//                                arrayListOf(
-//                                        Post(null, "my first post", "content of my first post"),
-//                                        Post(null, "my second post", "content of my second post")
-//                                )
-//                        )
-//                    }
                     .log()
                     .subscribe(null, null, { println("data initialization done.") })
         }
     }
+
     bean {
         PostRoutes(PostHandler(ref())).routes()
     }
