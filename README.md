@@ -41,13 +41,13 @@ The backend is a Spring Boot based application, make sure you have installed the
 
 There is a *docker-compose.yml* file in the project root folder. 
 
-Starts up mongodb service by the following command.
+Starts up required MongoDb and Reids service in the background by executing the following command.
 
 ```
-docker-compose up mongodb
+docker-compose up
 ```
 
-> NOTE: You can also install a local mongodb instead of using Docker.
+> NOTE: You can also install a local MongoDb and Redis instead of using Docker.
 
 Then run the application by Spring boot maven plugin directly.
 
