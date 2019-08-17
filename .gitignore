@@ -26,3 +26,4 @@ nbdist/
 node_modules
 dist/
 /client/package-lock.json
+/client/.vscode
