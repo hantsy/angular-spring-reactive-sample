@@ -5,7 +5,7 @@ import org.springframework.context.support.GenericApplicationContext
 
 class TestConfigInitializer: ApplicationContextInitializer<GenericApplicationContext>{
     override fun initialize(applicationContext: GenericApplicationContext) {
-       beans().initialize(applicationContext)
+       beans.initialize(applicationContext)
     }
 
 }

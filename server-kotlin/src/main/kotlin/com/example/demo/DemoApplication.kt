@@ -10,15 +10,16 @@ import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.web.server.ServerHttpSecurity
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository
 import org.springframework.session.data.mongo.config.annotation.web.reactive.EnableMongoWebSession
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.reactive.CorsWebFilter
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.ServerResponse.*
@@ -34,7 +35,7 @@ import java.time.LocalDateTime
 class DemoApplication
 
 
-fun beans() = beans {
+val beans = beans {
     bean {
         CommandLineRunner {
             println("start data initialization...")
@@ -64,7 +65,13 @@ fun beans() = beans {
     }
 
     bean {
-        PostRoutes(PostHandler(ref())).routes()
+        PostHandler(ref(), ref())
+    }
+
+    bean<UserInfoHandler>()
+
+    bean {
+        PostRoutes(ref(), ref()).routes()
     }
 
     bean {
@@ -73,47 +80,56 @@ fun beans() = beans {
         }
     }
 
-    bean {
+    profile("cors") {
+        bean("corsFilter") {
 
-        val config = CorsConfiguration().apply {
-            // allowedOrigins = listOf("http://allowed-origin.com")
-            // maxAge = 8000L
-            // addAllowedMethod("PUT")
-            // addAllowedHeader("X-Allowed")
+            //        val config = CorsConfiguration().apply {
+//            // allowedOrigins = listOf("http://allowed-origin.com")
+//            // maxAge = 8000L
+//            // addAllowedMethod("PUT")
+//            // addAllowedHeader("X-Allowed")
+//        }
+//
+//        val source = UrlBasedCorsConfigurationSource().apply {
+//            registerCorsConfiguration("/**", config)
+//        }
+
+            CorsWebFilter { CorsConfiguration().applyPermitDefaultValues() }
         }
-
-        val source = UrlBasedCorsConfigurationSource().apply {
-            registerCorsConfiguration("/**", config)
-        }
-
-        CorsWebFilter(source)
     }
 
-    bean<PasswordEncoder> {
+    bean {
         PasswordEncoderFactories.createDelegatingPasswordEncoder()
     }
 
     bean<SecurityWebFilterChain> {
-        ref<ServerHttpSecurity>().authorizeExchange()
-                .pathMatchers(HttpMethod.GET, "/posts/**").permitAll()
-                .pathMatchers(HttpMethod.DELETE, "/posts/**").hasRole("ADMIN")
-                .pathMatchers("/posts/**").authenticated()
-                //.pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
-                .anyExchange().permitAll()
+        //@formatter:off
+        ref<ServerHttpSecurity>()
+                    .csrf().disable()
+                    .httpBasic().securityContextRepository(WebSessionServerSecurityContextRepository())
                 .and()
-                .csrf().disable()
-                .build()
+                    .authorizeExchange()
+                    .pathMatchers("/auth/**").authenticated()
+                    .pathMatchers(HttpMethod.GET, "/posts/**").permitAll()
+                    .pathMatchers(HttpMethod.DELETE, "/posts/**").hasRole("ADMIN")
+                    .pathMatchers("/posts/**").authenticated()
+                    //.pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
+                    .anyExchange().permitAll()
+                .and()
+                    .build()
+        //@formatter:on
+
     }
 
     bean {
         val passwordEncoder = ref<PasswordEncoder>()
         val user = User.withUsername("user")
-                .passwordEncoder { it -> passwordEncoder.encode(it) }
+                .passwordEncoder { passwordEncoder.encode(it) }
                 .password("password")
                 .roles("USER").build()
         val admin = User.withUsername("admin")
                 .password("password")
-                .passwordEncoder { it -> passwordEncoder.encode(it) }
+                .passwordEncoder { passwordEncoder.encode(it) }
                 .roles("USER", "ADMIN")
                 .build()
         MapReactiveUserDetailsService(user, admin)
@@ -123,31 +139,62 @@ fun beans() = beans {
 
 fun main(args: Array<String>) {
     runApplication<DemoApplication>(*args) {
-        addInitializers(beans())
+        addInitializers(beans)
     }
 }
 
-class PostRoutes(private val postHandler: PostHandler) {
+class PostRoutes(private val postHandler: PostHandler, private val userInfoHandler: UserInfoHandler) {
     fun routes() = router {
         "/posts".nest {
             GET("", postHandler::all)
+            GET("/count", postHandler::count)
             GET("/{id}", postHandler::get)
             POST("", postHandler::create)
             PUT("{id}", postHandler::update)
             PATCH("{id}", postHandler::updateStatus)
             DELETE("/{id}", postHandler::delete)
             //comments
+            GET("/{id}/comments/count", postHandler::countCommentsOfPost)
             GET("/{id}/comments", postHandler::getCommentsOfPost)
             POST("/{id}/comments", postHandler::createComment)
+
+            //get user info
+
         }
+        "/auth".nest {
+            GET("/user", userInfoHandler::userInfo)
+            GET("/logout", userInfoHandler::logout)
+        }
+    }
+}
+
+class UserInfoHandler {
+    fun userInfo(req: ServerRequest): Mono<ServerResponse> {
+        return req.principal()
+                .map { user ->
+                    mapOf<String, Any>(
+                            "user" to user.name,
+                            "roles" to (user as Authentication).authorities.map { it.authority })
+                }
+                .flatMap { ok().syncBody(it) }
+    }
+
+    fun logout(req: ServerRequest): Mono<ServerResponse> {
+        return req.session()
+                .doOnNext { it.invalidate() }
+                .then()
+                .flatMap { ok().build() }
     }
 }
 
 class PostHandler(private val posts: PostRepository, private val comments: CommentRepository) {
 
-
     fun all(req: ServerRequest): Mono<ServerResponse> {
         return ok().body(this.posts.findAll(), Post::class.java)
+    }
+
+    fun count(req: ServerRequest): Mono<ServerResponse> {
+        return ok().body(this.posts.count().map { Count(count = it) }, Count::class.java)
     }
 
     fun create(req: ServerRequest): Mono<ServerResponse> {
@@ -194,6 +241,12 @@ class PostHandler(private val posts: PostRepository, private val comments: Comme
                 .flatMap { created(URI.create("/posts/" + id + "/comments" + it.id)).build() }
     }
 
+    fun countCommentsOfPost(req: ServerRequest): Mono<ServerResponse> {
+        val id = req.pathVariable("id")
+        val postId = PostId(id)
+        return ok().body(this.comments.findByPost(postId).count().map { Count(count = it) }, Count::class.java)
+    }
+
     fun getCommentsOfPost(req: ServerRequest): Mono<ServerResponse> {
         val id = req.pathVariable("id")
         val postId = PostId(id)
@@ -210,6 +263,8 @@ data class Username(var username: String? = null)
 data class PostId(var id: String? = null)
 
 data class CommentForm(var content: String? = null)
+
+data class Count(val count: Long)
 
 @Document
 data class Post(
@@ -239,15 +294,15 @@ interface CommentRepository : ReactiveMongoRepository<Comment, String> {
     fun findByPost(id: PostId): Flux<Comment>
 }
 
-
-@Document
-data class User(
-        @Id var id: String? = null,
-        var username: String? = null,
-        var password: String? = null,
-        var email: String? = null,
-        var active: Boolean = true,
-        var roles: List<String> = mutableListOf()
-)
-
-interface UserRepository : ReactiveMongoRepository<User, String>
+//
+//@Document
+//data class User(
+//        @Id var id: String? = null,
+//        var username: String? = null,
+//        var password: String? = null,
+//        var email: String? = null,
+//        var active: Boolean = true,
+//        var roles: List<String> = mutableListOf()
+//)
+//
+//interface UserRepository : ReactiveMongoRepository<User, String>
