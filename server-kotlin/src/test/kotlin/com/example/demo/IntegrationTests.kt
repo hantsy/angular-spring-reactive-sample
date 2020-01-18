@@ -11,8 +11,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.kotlin.test.test
 import reactor.test.StepVerifier
-import reactor.test.test
 
 @SpringBootTest(classes = [DemoApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = arrayOf(TestConfigInitializer::class))
@@ -49,7 +49,7 @@ class IntegrationTests {
     fun `get none existing post should return 404`() {
         client.get()
                 .uri("/posts/notexisted")
-                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .test()
                 .expectNextMatches { it.statusCode() == HttpStatus.NOT_FOUND }
@@ -60,8 +60,8 @@ class IntegrationTests {
     fun `create a post without auth should fail with 401`() {
         client.post()
                 .uri("/posts/notexisted")
-                .syncBody(Post(content = "test post"))
-                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .bodyValue(Post(content = "test post"))
+                .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .test()
                 .expectNextMatches { it.statusCode() == HttpStatus.UNAUTHORIZED }
@@ -72,10 +72,10 @@ class IntegrationTests {
     fun `create a post  auth should fail with 401`() {
         client.post()
                 .uri("/posts")
-                .syncBody(Post(content = "test post"))
+                .bodyValue(Post(content = "test post"))
                 .headers {
                     it.setBasicAuth("user", "password")
-                    it.contentType = MediaType.APPLICATION_JSON_UTF8
+                    it.contentType = MediaType.APPLICATION_JSON
                 }
                 .exchange()
                 .test()
