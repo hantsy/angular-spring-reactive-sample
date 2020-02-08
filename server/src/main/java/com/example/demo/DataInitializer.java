@@ -5,6 +5,7 @@
  */
 package com.example.demo;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -21,25 +22,17 @@ import java.util.List;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 class DataInitializer {
 
     private final PostRepository posts;
     private final UserRepository users;
-    private final CommentRepository comments;
     private final PasswordEncoder passwordEncoder;
-
-    public DataInitializer(PostRepository posts, UserRepository users, CommentRepository comments, PasswordEncoder passwordEncoder) {
-        this.posts = posts;
-        this.users = users;
-        this.comments = comments;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @EventListener(value = ApplicationReadyEvent.class)
     public void init() {
         initPosts();
         initUsers();
-        initComments();
     }
 
     private void initUsers() {
@@ -92,16 +85,5 @@ class DataInitializer {
             );
     }
 
-    private void initComments() {
-        log.info("start comments data initialization  ...");
-        this.posts
-            .deleteAll()
-            .log()
-            .subscribe(
-                null,
-                null,
-                () -> log.info("done comments initialization...")
-            );
-    }
 
 }

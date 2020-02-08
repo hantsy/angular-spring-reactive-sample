@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -16,16 +17,13 @@ import static org.springframework.http.ResponseEntity.*;
 
 @RestController()
 @RequestMapping(value = "/posts")
+@RequiredArgsConstructor
 class PostController {
 
     private final PostRepository posts;
 
     private final CommentRepository comments;
 
-    public PostController(PostRepository posts, CommentRepository comments) {
-        this.posts = posts;
-        this.comments = comments;
-    }
 
     @GetMapping("")
     public Flux<Post> all(@RequestParam(value = "q", required = false) String q,

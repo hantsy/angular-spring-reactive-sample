@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -27,29 +28,26 @@ import java.util.List;
 @Component
 @Order(-2)
 @Slf4j
+@RequiredArgsConstructor
 public class RestExceptionHandler implements WebExceptionHandler {
 
-    private ObjectMapper objectMapper;
-
-    public RestExceptionHandler(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+    private final ObjectMapper objectMapper;
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
         if (ex instanceof WebExchangeBindException) {
-            WebExchangeBindException webExchangeBindException = (WebExchangeBindException) ex;
+            var webExchangeBindException = (WebExchangeBindException) ex;
 
             log.debug("errors:" + webExchangeBindException.getFieldErrors());
-            Errors errors = new Errors("validation_failure", "Validation failed.");
+            var errors = new Errors("validation_failure", "Validation failed.");
             webExchangeBindException.getFieldErrors().forEach(e -> errors.add(e.getField(), e.getCode(), e.getDefaultMessage()));
 
             log.debug("handled errors::" + errors);
             try {
                 exchange.getResponse().setStatusCode(HttpStatus.UNPROCESSABLE_ENTITY);
-                exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
+                exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-                DataBuffer db = new DefaultDataBufferFactory().wrap(objectMapper.writeValueAsBytes(errors));
+                var db = new DefaultDataBufferFactory().wrap(objectMapper.writeValueAsBytes(errors));
 
                 // write the given data buffer to the response
                 // and return a Mono that signals when it's done

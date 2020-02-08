@@ -26,9 +26,6 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthController {
 
-    public AuthController() {
-    }
-
     @GetMapping("/user")
     public Mono<Map> current(@AuthenticationPrincipal Mono<Principal> principal) {
         return principal
