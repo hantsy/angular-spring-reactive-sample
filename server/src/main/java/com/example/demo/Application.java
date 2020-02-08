@@ -1,11 +1,9 @@
 package com.example.demo;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -18,8 +16,9 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 import org.springframework.session.data.mongo.config.annotation.web.reactive.EnableMongoWebSession;
-import org.springframework.web.reactive.config.CorsRegistry;
-import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.server.session.HeaderWebSessionIdResolver;
 import org.springframework.web.server.session.WebSessionIdResolver;
 import reactor.core.publisher.Mono;
@@ -37,34 +36,16 @@ public class Application {
     }
 }
 
-
 @Configuration
-@Slf4j
-class WebConfig implements WebFluxConfigurer {
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
+@EnableMongoWebSession
+class WebConfig {
+    @Bean
+    CorsWebFilter corsWebFilter() {
+        var corsConfiguration = new CorsConfiguration().applyPermitDefaultValues();
+        var source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return new CorsWebFilter(source);
     }
-}
-
-@Configuration
-@EnableMongoAuditing
-//auditing does not work in reactive now.
-class MongoConfig {
-
-//    @Bean
-//    public AuditorAware<Username> auditor() {
-//        return () -> ReactiveSecurityContextHolder.getContext()
-//            .map(SecurityContext::getAuthentication)
-//            .log()
-//            .filter(a -> a != null && a.isAuthenticated())
-////            .map(Authentication::getPrincipal)
-////            .cast(UserDetails.class)
-//            .map(auth -> new Username(auth.getName()))
-//            .switchIfEmpty(Mono.empty())
-//            .blockOptional();
-//    }
 }
 
 @Configuration
@@ -85,40 +66,42 @@ class SecurityConfig {
     @Bean
     SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) throws Exception {
 
-        //@formatter:off
         return http
-                    .csrf().disable()
-                    .httpBasic().securityContextRepository(new WebSessionServerSecurityContextRepository())
-                .and()
-                    .authorizeExchange()
-                    .pathMatchers(HttpMethod.GET, "/posts/**").permitAll()
-                    .pathMatchers(HttpMethod.DELETE, "/posts/**").hasRole("ADMIN")
-                    .pathMatchers("/posts/**").authenticated()
-                    .pathMatchers("/auth/**").authenticated()
-                    .pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
-                    .anyExchange().permitAll()
-                .and()
-                    .build();
-        //@formatter:on
+                .csrf(it ->
+                        it.disable()
+                )
+                .httpBasic(it ->
+                        it.securityContextRepository(new WebSessionServerSecurityContextRepository())
+                )
+                .authorizeExchange(it ->
+                        it.pathMatchers(HttpMethod.GET, "/posts/**").permitAll()
+                                .pathMatchers(HttpMethod.DELETE, "/posts/**").hasRole("ADMIN")
+                                .pathMatchers("/posts/**").authenticated()
+                                .pathMatchers("/auth/**").authenticated()
+                                .pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
+                                .anyExchange().permitAll()
+                )
+                .build();
+
     }
 
     private Mono<AuthorizationDecision> currentUserMatchesPath(Mono<Authentication> authentication, AuthorizationContext context) {
         return authentication
-            .map(a -> context.getVariables().get("user").equals(a.getName()))
-            .map(AuthorizationDecision::new);
+                .map(a -> context.getVariables().get("user").equals(a.getName()))
+                .map(AuthorizationDecision::new);
     }
 
     @Bean
     public ReactiveUserDetailsService userDetailsService(UserRepository users) {
         return (username) -> users.findByUsername(username)
-            .map(u -> User.withUsername(u.getUsername())
-                .password(u.getPassword())
-                .authorities(u.getRoles().toArray(new String[0]))
-                .accountExpired(!u.isActive())
-                .credentialsExpired(!u.isActive())
-                .disabled(!u.isActive())
-                .accountLocked(!u.isActive())
-                .build()
-            );
+                .map(u -> User.withUsername(u.getUsername())
+                        .password(u.getPassword())
+                        .authorities(u.getRoles().toArray(new String[0]))
+                        .accountExpired(!u.isActive())
+                        .credentialsExpired(!u.isActive())
+                        .disabled(!u.isActive())
+                        .accountLocked(!u.isActive())
+                        .build()
+                );
     }
 }

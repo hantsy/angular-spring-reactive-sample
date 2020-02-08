@@ -28,71 +28,71 @@ public class ApplicationTests {
     @BeforeEach
     public void setup() {
         client = WebTestClient
-            .bindToApplicationContext(context)
-            .apply(springSecurity())
-            .configureClient()
-            //.defaultHeaders( h-> h.setBasicAuth("user", "password"))
-            //.filter(basicAuthentication())
-            .build();
+                .bindToApplicationContext(context)
+                .apply(springSecurity())
+                .configureClient()
+                //.defaultHeaders( h-> h.setBasicAuth("user", "password"))
+                //.filter(basicAuthentication())
+                .build();
     }
 
     @Test
     public void getAllPostsWithAuthentication_ShouldBeOk() {
         client
-            .get()
-            .uri("/posts/")
-            .exchange()
-            .expectStatus().isOk();
+                .get()
+                .uri("/posts/")
+                .exchange()
+                .expectStatus().isOk();
     }
 
     @Test
     public void getNoneExistedPost_ShouldReturn404() {
         client
-            .get()
-            .uri("/posts/ABC")
-            .exchange()
-            .expectStatus().isNotFound();
+                .get()
+                .uri("/posts/ABC")
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
     @Test
     public void createPostWithoutAuthentication_shouldReturn401() {
         client
-            .post()
-            .uri("/posts")
-            .body(BodyInserters.fromObject(Post.builder().title("Post test").content("content of post test").build()))
-            .exchange()
-            .expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED);
+                .post()
+                .uri("/posts")
+                .body(BodyInserters.fromObject(Post.builder().title("Post test").content("content of post test").build()))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
     public void updateNoneExistedPostWithUserRole_shouldReturn404() {
         client
-            .mutate().filter(basicAuthentication("user", "password")).build()
-            .put()
-            .uri("/posts/none_existed")
-            .body(BodyInserters.fromObject(Post.builder().title("updated title").content("updated content").build()))
-            .exchange()
-            .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+                .mutate().filter(basicAuthentication("user", "password")).build()
+                .put()
+                .uri("/posts/none_existed")
+                .body(BodyInserters.fromObject(Post.builder().title("updated title").content("updated content").build()))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
     public void deletePostWithUserRole_shouldReturn403() {
         client
-            .mutate().filter(basicAuthentication("user", "password")).build()
-            .delete()
-            .uri("/posts/1")
-            .exchange()
-            .expectStatus().isEqualTo(HttpStatus.FORBIDDEN);
+                .mutate().filter(basicAuthentication("user", "password")).build()
+                .delete()
+                .uri("/posts/1")
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.FORBIDDEN);
     }
 
     @Test
     public void deleteNoneExistedPostWithAdminRole_shouldReturn404() {
         client
-            .mutate().filter(basicAuthentication("admin", "password")).build()
-            .delete()
-            .uri("/posts/none_existed")
-            .exchange()
-            .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+                .mutate().filter(basicAuthentication("admin", "password")).build()
+                .delete()
+                .uri("/posts/none_existed")
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
@@ -103,76 +103,70 @@ public class ApplicationTests {
         String content = "content of " + title;
 
 
-        Post post = client
-            .mutate().filter(basicAuthentication("user", "password")).build()
-            .post()
-            .uri("/posts")
-            .body(BodyInserters.fromObject(Post.builder().title(title).content(content).build()))
-            .exchange()
-            .expectStatus().isOk()
-            .returnResult(Post.class).getResponseBody().blockFirst();
+        var result = client
+                .mutate().filter(basicAuthentication("user", "password")).build()
+                .post()
+                .uri("/posts")
+                .bodyValue(Post.builder().title(title).content(content).build())
+                .exchange()
+                .expectStatus().isCreated()
+                .returnResult(Void.class);
 
-        assertEquals(title, post.getTitle());
-        assertEquals(content, post.getContent());
-        assertNotNull(post.getCreatedDate());
 
-        String id = post.getId();
+        String savedPostUri = result.getResponseHeaders().getLocation().toString();
 
-        assertNotNull(id);
+        assertNotNull(savedPostUri);
 
         client
-            .get()
-            .uri("/posts/" + id)
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody()
-            .jsonPath("$.title").isEqualTo(title)
-            .jsonPath("$.content").isEqualTo(content)
-            .jsonPath("$.createdDate").isNotEmpty();
+                .get()
+                .uri(savedPostUri)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.title").isEqualTo(title)
+                .jsonPath("$.content").isEqualTo(content)
+                .jsonPath("$.createdDate").isNotEmpty();
 
         // added comment
         client
-            .mutate().filter(basicAuthentication("user", "password")).build()
-            .post()
-            .uri("/posts/" + id + "/comments")
-            .body(BodyInserters.fromObject(Comment.builder().content("my comments").build()))
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody().jsonPath("$.id").isNotEmpty();
+                .mutate().filter(basicAuthentication("user", "password")).build()
+                .post()
+                .uri(savedPostUri + "/comments")
+                .bodyValue(Comment.builder().content("my comments").build())
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody().isEmpty();
 
         client
-            .get()
-            .uri("/posts/" + id + "/comments")
-            .exchange()
-            .expectStatus().isOk()
-            .expectBodyList(Comment.class).hasSize(1);
+                .get()
+                .uri(savedPostUri + "/comments")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(Comment.class).hasSize(1);
 
-        Post updated = client
-            .mutate().filter(basicAuthentication("user", "password")).build()
-            .put()
-            .uri("/posts/" + id)
-            .body(BodyInserters.fromObject(Post.builder().title("updated title").content("updated content").build()))
-            .exchange()
-            .expectStatus().isOk()
-            .returnResult(Post.class).getResponseBody().blockFirst();
-
-        assertEquals("updated title", updated.getTitle());
-        assertEquals("updated content", updated.getContent());
+        client
+                .mutate().filter(basicAuthentication("user", "password")).build()
+                .put()
+                .uri(savedPostUri)
+                .bodyValue(Post.builder().title("updated title").content("updated content").build())
+                .exchange()
+                .expectStatus().isNoContent()
+                .expectBody().isEmpty();
 
 
         client
-            .mutate().filter(basicAuthentication("user", "password")).build()
-            .delete()
-            .uri("/posts/" + id)
-            .exchange()
-            .expectStatus().isForbidden();
+                .mutate().filter(basicAuthentication("user", "password")).build()
+                .delete()
+                .uri(savedPostUri)
+                .exchange()
+                .expectStatus().isForbidden();
 
         client
-            .mutate().filter(basicAuthentication("admin", "password")).build()
-            .delete()
-            .uri("/posts/" + id)
-            .exchange()
-            .expectStatus().isNoContent();
+                .mutate().filter(basicAuthentication("admin", "password")).build()
+                .delete()
+                .uri(savedPostUri)
+                .exchange()
+                .expectStatus().isNoContent();
 
     }
 

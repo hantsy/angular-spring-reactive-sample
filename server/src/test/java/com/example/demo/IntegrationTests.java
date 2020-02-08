@@ -92,33 +92,29 @@ public class IntegrationTests {
     }
 
     @Test
-    //@WithMockUser
     public void postCrudOperations() {
         int randomInt = new Random().nextInt();
         String title = "Post test " + randomInt;
         String content = "content of " + title;
 
 
-        Post post = client
+        var result = client
             .mutate().filter(basicAuthentication("user", "password")).build()
             .post()
             .uri("/posts")
-            .body(BodyInserters.fromObject(Post.builder().title(title).content(content).build()))
+            .bodyValue(Post.builder().title(title).content(content).build())
             .exchange()
-            .expectStatus().isOk()
-            .returnResult(Post.class).getResponseBody().blockFirst();
+            .expectStatus().isCreated()
+            .returnResult(Void.class);
 
-        assertEquals(title, post.getTitle());
-        assertEquals(content, post.getContent());
-        assertNotNull(post.getCreatedDate());
 
-        String id = post.getId();
+        String savedPostUri = result.getResponseHeaders().getLocation().toString();
 
-        assertNotNull(id);
+        assertNotNull(savedPostUri);
 
         client
             .get()
-            .uri("/posts/" + id)
+            .uri(savedPostUri)
             .exchange()
             .expectStatus().isOk()
             .expectBody()
@@ -130,44 +126,40 @@ public class IntegrationTests {
         client
             .mutate().filter(basicAuthentication("user", "password")).build()
             .post()
-            .uri("/posts/" + id + "/comments")
-            .body(BodyInserters.fromObject(Comment.builder().content("my comments").build()))
+            .uri(savedPostUri + "/comments")
+            .bodyValue(Comment.builder().content("my comments").build())
             .exchange()
-            .expectStatus().isOk()
-            .expectBody().jsonPath("$.id").isNotEmpty();
+            .expectStatus().isCreated()
+            .expectBody().isEmpty();
 
         // get comments of post
         client
             .get()
-            .uri("/posts/" + id + "/comments")
+            .uri(savedPostUri + "/comments")
             .exchange()
             .expectStatus().isOk()
             .expectBodyList(Comment.class).hasSize(1);
 
-        Post updated = client
+        client
             .mutate().filter(basicAuthentication("user", "password")).build()
             .put()
-            .uri("/posts/" + id)
-            .body(BodyInserters.fromObject(Post.builder().title("updated title").content("updated content").build()))
+            .uri(savedPostUri)
+            .bodyValue(Post.builder().title("updated title").content("updated content").build())
             .exchange()
-            .expectStatus().isOk()
-            .returnResult(Post.class).getResponseBody().blockFirst();
-
-        assertEquals("updated title", updated.getTitle());
-        assertEquals("updated content", updated.getContent());
+            .expectStatus().isNoContent();
 
 
         client
             .mutate().filter(basicAuthentication("user", "password")).build()
             .delete()
-            .uri("/posts/" + id)
+            .uri(savedPostUri)
             .exchange()
             .expectStatus().isForbidden();
 
         client
             .mutate().filter(basicAuthentication("admin", "password")).build()
             .delete()
-            .uri("/posts/" + id)
+            .uri(savedPostUri)
             .exchange()
             .expectStatus().isNoContent();
 
