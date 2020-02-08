@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { AuthService } from './core/auth.service';
-import { MatIconRegistry, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DialogComponent } from './dialog/dialog.component';
 
