@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment implements Serializable{
+public class Comment implements PersistentEntity, Serializable {
 
     @Id
     private String id;
@@ -23,12 +23,14 @@ public class Comment implements Serializable{
     @NotBlank
     private String content;
 
-    @CreatedDate
-    @Builder.Default
-    private LocalDateTime createdDate = LocalDateTime.now();
-
     private PostId post;
 
-    @CreatedBy
-    private Username author;
+    private LocalDateTime createdDate;
+
+    private Username createdBy;
+
+    private LocalDateTime lastModifiedDate;
+
+    private Username lastModifiedBy;
+
 }

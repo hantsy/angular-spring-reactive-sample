@@ -1,9 +1,7 @@
 package com.example.demo;
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
@@ -18,7 +16,7 @@ import static com.example.demo.Post.Status.DRAFT;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-class Post implements Serializable {
+class Post implements PersistentEntity, Serializable {
 
     @Id
     private String id;
@@ -32,12 +30,18 @@ class Post implements Serializable {
     @Builder.Default
     private Status status = DRAFT;
 
-    @CreatedDate
-    @Builder.Default
-    private LocalDateTime createdDate = LocalDateTime.now();
+    //@CreatedDate
+    //@Builder.Default
+    private LocalDateTime createdDate;
 
-    @CreatedBy
-    private Username author;
+    //@CreatedBy
+    private Username createdBy;
+
+    //@LastModifiedDate
+    private LocalDateTime lastModifiedDate;
+
+    //@LastModifiedBy
+    private Username lastModifiedBy;
 
     enum Status {
         DRAFT,
