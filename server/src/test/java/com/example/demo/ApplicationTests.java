@@ -59,7 +59,7 @@ public class ApplicationTests {
         client
                 .post()
                 .uri("/posts")
-                .body(BodyInserters.fromObject(Post.builder().title("Post test").content("content of post test").build()))
+                .body(BodyInserters.fromValue(Post.builder().title("Post test").content("content of post test").build()))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED);
     }
@@ -70,7 +70,7 @@ public class ApplicationTests {
                 .mutate().filter(basicAuthentication("user", "password")).build()
                 .put()
                 .uri("/posts/none_existed")
-                .body(BodyInserters.fromObject(Post.builder().title("updated title").content("updated content").build()))
+                .body(BodyInserters.fromValue(Post.builder().title("updated title").content("updated content").build()))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
     }
@@ -112,10 +112,9 @@ public class ApplicationTests {
                 .expectStatus().isCreated()
                 .returnResult(Void.class);
 
+        assertNotNull( result.getResponseHeaders().getLocation());
 
-        String savedPostUri = result.getResponseHeaders().getLocation().toString();
-
-        assertNotNull(savedPostUri);
+        var savedPostUri = result.getResponseHeaders().getLocation().toString();
 
         client
                 .get()

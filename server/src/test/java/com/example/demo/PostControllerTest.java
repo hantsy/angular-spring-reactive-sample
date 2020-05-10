@@ -162,7 +162,7 @@ public class PostControllerTest {
         given(posts.save(post))
                 .willReturn(Mono.just(Post.builder().id("1").title("updated title").content("updated content").createdDate(LocalDateTime.now()).build()));
 
-        client.put().uri("/posts/1").body(BodyInserters.fromObject(post))
+        client.put().uri("/posts/1").body(BodyInserters.fromValue(post))
                 .exchange()
                 .expectStatus().isNoContent()
                 .expectBody().isEmpty();
@@ -184,7 +184,7 @@ public class PostControllerTest {
         given(posts.save(post))
                 .willReturn(Mono.just(Post.builder().id("1").title("updated title").content("updated content").createdDate(LocalDateTime.now()).build()));
 
-        client.put().uri("/posts/1/status").body(BodyInserters.fromObject(new StatusUpdateRequest("PUBLISHED")))
+        client.put().uri("/posts/1/status").body(BodyInserters.fromValue(new StatusUpdateRequest("PUBLISHED")))
                 .exchange()
                 .expectStatus().isNoContent();
 
@@ -199,7 +199,7 @@ public class PostControllerTest {
         given(posts.save(post))
                 .willReturn(Mono.just(Post.builder().id("1").title("my first post").content("content of my first post").createdDate(LocalDateTime.now()).build()));
 
-        client.post().uri("/posts").body(BodyInserters.fromObject(post))
+        client.post().uri("/posts").body(BodyInserters.fromValue(post))
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody().isEmpty();
@@ -250,7 +250,7 @@ public class PostControllerTest {
                 .willReturn(Mono.just(Comment.builder().id("comment-id-1").post(PostId.builder().id("1").build()).content("content of my first post").createdDate(LocalDateTime.now()).build()));
 
         CommentForm form = CommentForm.builder().content("comment of my first post").build();
-        client.post().uri("/posts/1/comments").body(BodyInserters.fromObject(form))
+        client.post().uri("/posts/1/comments").body(BodyInserters.fromValue(form))
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody().isEmpty();

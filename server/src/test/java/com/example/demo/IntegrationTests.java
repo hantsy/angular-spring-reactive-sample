@@ -55,7 +55,7 @@ public class IntegrationTests {
         client
             .post()
             .uri("/posts")
-            .body(BodyInserters.fromObject(Post.builder().title("Post test").content("content of post test").build()))
+            .body(BodyInserters.fromValue(Post.builder().title("Post test").content("content of post test").build()))
             .exchange()
             .expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED);
     }
@@ -66,7 +66,7 @@ public class IntegrationTests {
             .mutate().filter(basicAuthentication("user", "password")).build()
             .put()
             .uri("/posts/none_existed")
-            .body(BodyInserters.fromObject(Post.builder().title("updated title").content("updated content").build()))
+            .body(BodyInserters.fromValue(Post.builder().title("updated title").content("updated content").build()))
             .exchange()
             .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
     }
