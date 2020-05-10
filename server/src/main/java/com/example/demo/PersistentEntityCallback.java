@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 
 @Component
-public class PostBeforeConvertCallback implements ReactiveBeforeConvertCallback<PersistentEntity> {
+public class PersistentEntityCallback implements ReactiveBeforeConvertCallback<PersistentEntity> {
     @Override
     public Publisher<PersistentEntity> onBeforeConvert(PersistentEntity entity, String collection) {
         var user = ReactiveSecurityContextHolder.getContext()
