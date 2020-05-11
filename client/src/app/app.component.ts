@@ -12,26 +12,26 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
   links = [
     {
       icon: 'home',
       path: '',
-      label: 'HOME'
+      label: 'HOME',
     },
 
     {
       icon: 'list',
       path: '/post/list',
-      label: 'POSTS'
+      label: 'POSTS',
     },
     {
       icon: 'add',
       path: '/post/new',
-      label: 'NEW POST'
-    }
+      label: 'NEW POST',
+    },
   ];
 
   isDarkTheme = false;
@@ -41,12 +41,10 @@ export class AppComponent implements OnInit {
     private auth: AuthService,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {
     // To avoid XSS attacks, the URL needs to be trusted from inside of your application.
-    const avatarsSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-      './assets/avatars.svg'
-    );
+    const avatarsSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('./assets/avatars.svg');
     this.iconRegistry.addSvgIconSetInNamespace('avatars', avatarsSafeUrl);
     this.currentUser = this.auth.currentUser();
   }
