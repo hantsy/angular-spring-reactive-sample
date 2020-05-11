@@ -55,6 +55,10 @@ class SessionConfig {
         resolver.setHeaderName("X-AUTH-TOKEN");
         return resolver;
     }
+}
+
+@Configuration
+class MongoConfig{
 
     @Bean
     public PersistentEntityCallback persistentEntityCallback() {

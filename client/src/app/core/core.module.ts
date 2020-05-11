@@ -10,11 +10,7 @@ import { LoadGuard } from './load-guard';
 import { TokenInterceptor } from './token-inteceptor';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    RouterModule
-  ],
+  imports: [CommonModule, HttpClientModule, RouterModule],
   providers: [
     AuthGuard,
     LoadGuard,
@@ -23,20 +19,19 @@ import { TokenInterceptor } from './token-inteceptor';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
-      multi: true
+      multi: true,
     },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
-      multi: true
-    }
+      multi: true,
+    },
   ],
-  declarations: []
+  declarations: [],
 })
 export class CoreModule {
-
   // Prevent reimport of the CoreModule
-  constructor( @Optional() @SkipSelf() parentModule: CoreModule) {
+  constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
     if (parentModule) {
       throw new Error('CoreModule is already loaded. Import it in the AppModule only');
     }
