@@ -11,7 +11,6 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
-@Component
 public class PersistentEntityCallback implements ReactiveBeforeConvertCallback<PersistentEntity> {
 
     @Override

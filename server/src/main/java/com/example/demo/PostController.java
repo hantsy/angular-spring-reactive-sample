@@ -7,7 +7,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
-import javax.validation.constraints.PastOrPresent;
 import java.net.URI;
 import java.util.Optional;
 
@@ -35,8 +34,8 @@ class PostController {
     }
 
     @GetMapping(value = "/count")
-    public Mono<Count> count(@RequestParam(value = "q", required = false) String q) {
-        return filterPublishedPostsByKeyword(q).count().log().map(Count::new);
+    public Mono<CountValue> count(@RequestParam(value = "q", required = false) String q) {
+        return filterPublishedPostsByKeyword(q).count().log().map(CountValue::new);
     }
 
     private Flux<Post> filterPublishedPostsByKeyword(String q) {
@@ -104,8 +103,8 @@ class PostController {
     }
 
     @GetMapping("/{id}/comments/count")
-    public Mono<Count> getCommentsCountOf(@PathVariable("id") String id) {
-        return this.comments.findByPost(new PostId(id)).count().log().map(Count::new);
+    public Mono<CountValue> getCommentsCountOf(@PathVariable("id") String id) {
+        return this.comments.findByPost(new PostId(id)).count().log().map(CountValue::new);
     }
 
     @PostMapping("/{id}/comments")

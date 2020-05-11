@@ -15,10 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
-import org.springframework.session.data.mongo.config.annotation.web.reactive.EnableMongoWebSession;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.server.session.HeaderWebSessionIdResolver;
 import org.springframework.web.server.session.WebSessionIdResolver;
 import reactor.core.publisher.Mono;
@@ -37,7 +36,6 @@ public class Application {
 }
 
 @Configuration
-@EnableMongoWebSession
 class WebConfig {
     @Bean
     CorsWebFilter corsWebFilter() {
@@ -49,7 +47,6 @@ class WebConfig {
 }
 
 @Configuration
-@EnableMongoWebSession
 class SessionConfig {
 
     @Bean
@@ -57,6 +54,11 @@ class SessionConfig {
         HeaderWebSessionIdResolver resolver = new HeaderWebSessionIdResolver();
         resolver.setHeaderName("X-AUTH-TOKEN");
         return resolver;
+    }
+
+    @Bean
+    public PersistentEntityCallback persistentEntityCallback() {
+        return new PersistentEntityCallback();
     }
 }
 

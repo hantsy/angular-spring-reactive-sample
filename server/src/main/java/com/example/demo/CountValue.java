@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Getter
 @ToString
 @AllArgsConstructor(onConstructor = @__({@JsonCreator}))
-public class Count implements Serializable {
+public class CountValue implements Serializable {
 
     private long count;
 }
