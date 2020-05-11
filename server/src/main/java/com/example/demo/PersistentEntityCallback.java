@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 
 @Component
 public class PersistentEntityCallback implements ReactiveBeforeConvertCallback<PersistentEntity> {
+
     @Override
     public Publisher<PersistentEntity> onBeforeConvert(PersistentEntity entity, String collection) {
         var user = ReactiveSecurityContextHolder.getContext()
@@ -30,23 +31,16 @@ public class PersistentEntityCallback implements ReactiveBeforeConvertCallback<P
         }
         entity.setLastModifiedDate(currentTime);
 
-        return Mono
-                .just(entity)
-                .flatMap(
-                        ent ->
-                                user
-                                        .map(
-                                                u -> {
-                                                    if (ent.getId() == null) {
-                                                        ent.setCreatedBy(u);
-                                                    }
-                                                    ent.setLastModifiedBy(u);
+        return user
+                .map(u -> {
+                            if (entity.getId() == null) {
+                                entity.setCreatedBy(u);
+                            }
+                            entity.setLastModifiedBy(u);
 
-                                                    return ent;
-                                                }
-                                        )
-                                        .defaultIfEmpty(ent)
-
-                );
+                            return entity;
+                        }
+                )
+                .defaultIfEmpty(entity);
     }
 }
