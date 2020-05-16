@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.publisher.Flux;
@@ -28,7 +29,7 @@ public class PostRepositoryTest {
 
     @DynamicPropertySource
     static void neo4jProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", () -> "mongodb://" + mongoDBContainer.getContainerIpAddress() + ":" + mongoDBContainer.getPort() + "/testblog");
+        registry.add("spring.data.mongodb.uri", () -> mongoDBContainer.getReplicaSetUrl());
     }
 
     @Autowired
@@ -43,7 +44,6 @@ public class PostRepositoryTest {
                 .subscribe(r -> log.debug("delete all posts: " + r), e -> log.debug("error: " + e), () -> log.debug("done"));
     }
 
-
     @Test
     public void testSavePost() {
         StepVerifier.create(this.postRepository.save(Post.builder().content("my test content").title("my test title").build()))
@@ -51,7 +51,6 @@ public class PostRepositoryTest {
                 .expectComplete()
                 .verify();
     }
-
 
     @Test
     public void testSaveAndVerifyPost() {
