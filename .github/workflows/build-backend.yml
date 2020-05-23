@@ -1,4 +1,4 @@
-name: maven
+name: Build Backend APIs
 
 on: 
   push:
@@ -38,22 +38,10 @@ jobs:
     - name: Build Docker Image 
       run: mvn spring-boot:build-image --file server/pom.xml -DskipTests  
       
-  build-client:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Setup NodeJS
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: '14'
-        
-    - name: Install Dependencies & Build
-      run: |
-        cd ./client 
-        npm install
-        npm run build 
-
-    - name: Build Docker Image for Angular Client
-      run: docker build -t hantsy/angular-spring-reactive-sample-client -f ./Dockerfile.client . 
+    - name: Login to DockerHub Registry
+      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin  
+      
+    - name: Push Docker Image
+      run: docker push hantsy/angular-spring-reactive-sample-server    
+      
+ 
