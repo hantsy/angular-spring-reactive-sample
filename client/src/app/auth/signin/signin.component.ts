@@ -6,17 +6,16 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.component.html',
-  styleUrls: ['./signin.component.css']
+  styleUrls: ['./signin.component.css'],
 })
 export class SigninComponent implements OnInit {
-
-  private username = '';
-  private password = '';
+  username = '';
+  password = '';
   errorMessage = '';
 
   sub: Subscription = null;
 
-  constructor(private auth: AuthService, private router: Router) { }
+  constructor(private auth: AuthService, private router: Router) {}
 
   ngOnInit() {
     console.log('calling ngOnInit...');
@@ -24,8 +23,7 @@ export class SigninComponent implements OnInit {
 
   submit() {
     console.log('calling submit...');
-    this.auth.attempAuth({ username: this.username, password: this.password })
-      .subscribe(
+    this.auth.attempAuth({ username: this.username, password: this.password }).subscribe(
       (data) => {
         // console.log(data);
         this.router.navigate(['']);
@@ -34,8 +32,7 @@ export class SigninComponent implements OnInit {
         // console.log(err);
         this.errorMessage = 'login failed';
         return;
-      }
-      );
+      },
+    );
   }
-
 }
