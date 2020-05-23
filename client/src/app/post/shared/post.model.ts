@@ -7,4 +7,3 @@ export interface Post {
   author?: Username;
   createdDate?: any;
 }
-

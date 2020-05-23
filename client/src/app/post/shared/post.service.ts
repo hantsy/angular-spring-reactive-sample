@@ -14,7 +14,7 @@ export class PostService {
   getPosts(term?: any): Observable<any> {
     const params: HttpParams = new HttpParams();
     if (term) {
-      Object.keys(term).map(key => {
+      Object.keys(term).map((key) => {
         if (term[key]) {
           params.set(key, term[key]);
         }
