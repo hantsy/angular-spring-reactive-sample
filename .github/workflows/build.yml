@@ -49,15 +49,11 @@ jobs:
       with:
         node-version: '12.x'
         
-    - name: Install Dependencies
+    - name: Install Dependencies & Build
       run: |
         cd ./client 
         npm install
-      
-    - name: Build Angular Client
-      run: |
         npm run build 
-        cd ../
-      
+
     - name: Build Docker Image for Angular Client
       run: docker build -t hantsy/angular-spring-reactive-sample-client -f ./Dockerfile.client . 
