@@ -4,11 +4,13 @@ FROM nginx:alpine-perl
 LABEL maintainer="Hantsy Bai"
 
 EXPOSE 80
+## Remove default Nginx website
+RUN rm -rf /usr/share/nginx/html/*
 
-# RUN rm /etc/nginx/conf.d/default.conf
+RUN rm /etc/nginx/conf.d/default.conf
 
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+ADD ./nginx/nginx.conf /etc/nginx/nginx.conf
 
-COPY ./client/dist /usr/share/nginx/html 
+ADD ./client/dist /usr/share/nginx/html 
 
 

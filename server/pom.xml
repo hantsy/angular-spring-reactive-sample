@@ -97,7 +97,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <image>
-                        <name>hantsy/${project.artifactId}:lastest</name>
+                        <name>hantsy/${project.artifactId}:latest</name>
                         <verboseLogging>true</verboseLogging>
                     </image>
                 </configuration>

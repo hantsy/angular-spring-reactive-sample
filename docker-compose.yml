@@ -1,4 +1,4 @@
-version: '3.3' # specify docker-compose version
+version: '3.8' # specify docker-compose version
 
 # Define the services/containers to be run
 services:
@@ -7,6 +7,8 @@ services:
     image: redis
     ports:
       - "6379:6379"
+    networks:
+      - backend 
       
   mongodb: 
     image: mongo 
@@ -14,12 +16,38 @@ services:
       - mongodata:/data/db
     ports:
       - "27017:27017"
-#    command: --smallfiles 
-#   command: --smallfiles --rest --auth  // if there is a password set in mongo.
+    networks:
+      - backend   
 
-
+  client:
+    image: hantsy/angular-spring-reactive-sample-client
+    environment:
+      - "BACKEND_API_URL=http://api:8080/"
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - frontend
+      - backend
+      
+  api:
+    image: hantsy/angular-spring-reactive-sample-server
+    environment:
+      - "SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/blog"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    networks:
+      - backend      
+ 
 volumes:
   mongodata:  
 #    driver: local-persist
 #    driver_opts:
 #      mountpoint: ./data  
+
+networks:
+  frontend:
+  backend:
