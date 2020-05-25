@@ -26,14 +26,12 @@ jobs:
       with:
         node-version: '14'
         
-    - name: Install Dependencies & Build
+    - name: Install Dependencies & Build Docker Image
       run: |
         cd ./client 
         npm install
         npm run build 
-
-    - name: Build Docker Image for Angular Client
-      run: docker build -t hantsy/angular-spring-reactive-sample-client -f ./Dockerfile.client . 
+        docker build -t hantsy/angular-spring-reactive-sample-client . 
       
     - name: Login to DockerHub Registry
       run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin  

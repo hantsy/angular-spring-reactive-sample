@@ -22,7 +22,7 @@ services:
   client:
     image: hantsy/angular-spring-reactive-sample-client
     environment:
-      - "BACKEND_API_URL=http://api:8080/"
+      - "BACKEND_API_URL=http://api:8080"
     ports:
       - "80:80"
     depends_on:
