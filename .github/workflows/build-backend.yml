@@ -8,10 +8,10 @@ on:
       - master
       - release/*
   pull_request:
-    paths-ignore:
-      - "docs/**"
-    branches:
-      - master
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   build-server:
