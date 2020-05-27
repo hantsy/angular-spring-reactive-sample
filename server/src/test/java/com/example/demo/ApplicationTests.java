@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
@@ -21,10 +22,12 @@ import static org.springframework.web.reactive.function.client.ExchangeFilterFun
 
 @SpringBootTest(
         properties = {
-                "embedded.mongodb.install.enabled=true",
-                "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
+                "embedded.mongodb.enabled=false"
+//                "embedded.mongodb.install.enabled=true",
+//                "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
         }
 )
+@ContextConfiguration(initializers = {MongodbContainerInitializer.class})
 public class ApplicationTests {
 
     @Autowired
@@ -94,7 +97,6 @@ public class ApplicationTests {
                 .mutate().filter(basicAuthentication("user", "password")).build()
                 .delete()
                 .uri("/posts/1")
-                .headers( httpHeaders -> httpHeaders.setBasicAuth("user", "password"))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.FORBIDDEN);
     }
@@ -105,6 +107,7 @@ public class ApplicationTests {
                 //.mutate().filter(basicAuthentication("admin", "password")).build()
                 .delete()
                 .uri("/posts/none_existed")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth("admin", "password"))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
     }

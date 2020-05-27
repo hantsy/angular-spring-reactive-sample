@@ -5,15 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.testcontainers.containers.MongoDBContainer;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -25,22 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
         }
 )
 @Slf4j
-@ContextConfiguration(initializers = {PostRepositoryWithManualTestcontainersTest.Initializer.class})
+@ContextConfiguration(initializers = {MongodbContainerInitializer.class})
 public class PostRepositoryWithManualTestcontainersTest {
-
-    static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            var mongoDBContainer = new MongoDBContainer();
-            mongoDBContainer.start();
-
-            configurableApplicationContext
-                    .addApplicationListener((ApplicationListener<ContextClosedEvent>) event -> mongoDBContainer.stop());
-            log.debug("mongoDBContainer.getReplicaSetUrl():" + mongoDBContainer.getReplicaSetUrl());
-            TestPropertyValues
-                    .of("spring.data.mongodb.uri=" + mongoDBContainer.getReplicaSetUrl())
-                    .applyTo(configurableApplicationContext.getEnvironment());
-        }
-    }
 
     @Autowired
     PostRepository postRepository;
