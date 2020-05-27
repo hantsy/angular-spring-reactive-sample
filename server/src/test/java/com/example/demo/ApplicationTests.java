@@ -79,9 +79,10 @@ public class ApplicationTests {
     @Test
     public void updateNoneExistedPostWithUserRole_shouldReturn404() {
         client
-                .mutate().filter(basicAuthentication("user", "password")).build()
+                //mutate().filter(basicAuthentication("user", "password")).build()
                 .put()
                 .uri("/posts/none_existed")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth("user", "password"))
                 .body(BodyInserters.fromValue(Post.builder().title("updated title").content("updated content").build()))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
@@ -93,6 +94,7 @@ public class ApplicationTests {
                 .mutate().filter(basicAuthentication("user", "password")).build()
                 .delete()
                 .uri("/posts/1")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth("user", "password"))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.FORBIDDEN);
     }
@@ -100,7 +102,7 @@ public class ApplicationTests {
     @Test
     public void deleteNoneExistedPostWithAdminRole_shouldReturn404() {
         client
-                .mutate().filter(basicAuthentication("admin", "password")).build()
+                //.mutate().filter(basicAuthentication("admin", "password")).build()
                 .delete()
                 .uri("/posts/none_existed")
                 .exchange()
