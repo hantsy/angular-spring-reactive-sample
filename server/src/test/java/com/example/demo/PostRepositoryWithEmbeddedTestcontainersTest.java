@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataMongoTest
 @Slf4j
 @TestPropertySource( properties = {
+        "embedded.mongodb.install.enabled=true",
         "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
 })
 public class PostRepositoryWithEmbeddedTestcontainersTest {
@@ -35,8 +36,8 @@ public class PostRepositoryWithEmbeddedTestcontainersTest {
 
     @BeforeEach
     public void setup() {
-        this.reactiveMongoTemplate.remove(Post.class).all()
-                .subscribe(r -> log.debug("delete all posts: " + r), e -> log.debug("error: " + e), () -> log.debug("done"));
+        this.reactiveMongoTemplate.remove(Post.class).all().block();
+        log.debug("delete all posts :  @BeforeEach");
     }
 
     @Test

@@ -1,6 +1,8 @@
 package com.example.demo;
 
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import static org.springframework.web.reactive.function.client.ExchangeFilterFun
 
 @SpringBootTest(
         properties = {
+                "embedded.mongodb.install.enabled=true",
                 "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
         }
 )
@@ -38,6 +41,11 @@ public class ApplicationTests {
                 //.defaultHeaders( h-> h.setBasicAuth("user", "password"))
                 //.filter(basicAuthentication())
                 .build();
+    }
+
+    @AfterEach
+    public void teardown() {
+        client = null;
     }
 
     @Test
