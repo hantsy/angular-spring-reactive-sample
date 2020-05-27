@@ -25,6 +25,9 @@ import static org.mockito.Mockito.*;
         excludeAutoConfiguration = {
                 ReactiveUserDetailsServiceAutoConfiguration.class,
                 ReactiveSecurityAutoConfiguration.class
+        },
+        properties = {
+                "embedded.mongodb.enabled=false"
         }
 )
 @Slf4j

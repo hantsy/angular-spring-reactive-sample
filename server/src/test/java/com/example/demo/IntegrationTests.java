@@ -14,10 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
-        "embedded.mongodb.install.enabled=true",
-        "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
-})
+@SpringBootTest(
+        webEnvironment = RANDOM_PORT,
+        properties = {
+                "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
+        }
+)
 public class IntegrationTests {
 
     @LocalServerPort

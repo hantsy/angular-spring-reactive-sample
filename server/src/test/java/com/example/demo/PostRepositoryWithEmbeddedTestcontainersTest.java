@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataMongoTest
 @Slf4j
 @TestPropertySource( properties = {
-        "embedded.mongodb.install.enabled=true",
         "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
 })
 public class PostRepositoryWithEmbeddedTestcontainersTest {
@@ -49,7 +48,7 @@ public class PostRepositoryWithEmbeddedTestcontainersTest {
     }
 
     @Test
-    public void testSaveAndVerifyPost() {
+    public void testSavePostByBlocking() {
         Post saved = this.postRepository.save(Post.builder().content("my test content").title("my test title").build()).block();
         assertThat(saved.getId()).isNotNull();
         assertThat(this.reactiveMongoTemplate.collectionExists(Post.class).block()).isTrue();

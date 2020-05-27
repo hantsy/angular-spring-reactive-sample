@@ -18,7 +18,11 @@ import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataMongoTest
+@DataMongoTest(
+        properties = {
+                "embedded.mongodb.enabled=false"
+        }
+)
 @Slf4j
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
