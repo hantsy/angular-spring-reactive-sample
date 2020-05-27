@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         "embedded.mongodb.install.enabled=true",
         "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
 })
-public class PostRepositoryEmbeddedTestcontainersTest {
+public class PostRepositoryWithEmbeddedTestcontainersTest {
 
     @Autowired
     PostRepository postRepository;
