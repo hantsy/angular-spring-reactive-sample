@@ -17,7 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.springSecurity;
 import static org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication;
 
-@SpringBootTest
+@SpringBootTest(
+        properties = {
+                "embedded.mongodb.install.enabled=true",
+                "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
+        }
+)
 public class ApplicationTests {
 
     @Autowired
@@ -112,7 +117,7 @@ public class ApplicationTests {
                 .expectStatus().isCreated()
                 .returnResult(Void.class);
 
-        assertNotNull( result.getResponseHeaders().getLocation());
+        assertNotNull(result.getResponseHeaders().getLocation());
 
         var savedPostUri = result.getResponseHeaders().getLocation().toString();
 
