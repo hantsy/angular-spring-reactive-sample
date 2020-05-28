@@ -4,6 +4,7 @@ on:
   push:
     paths-ignore:
       - "docs/**"
+      - "client/**"
     branches:
       - master
       - release/*
@@ -35,8 +36,12 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      - name: Resolve dependencies
+        run: mvn clean dependency:go-offline --file server/pom.xml
+
       - name: Build with Maven
-        run: mvn clean package --file server/pom.xml -DskipTests
+        run: mvn package --file server/pom.xml -DskipTests
+
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
@@ -44,8 +49,11 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+
       - name: Build and analyze
-        run: mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --file server/pom.xml -Pcoverage
+        run: |
+          docker-compose up mongodb
+          mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --file server/pom.xml -Pcoverage
         env:
           # Needed to get some information about the pull request, if any
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -6,13 +6,13 @@
 # https://github.com/actions/labeler/blob/master/README.md
 
 name: "Pull Request Labeler"
-on: 
+on:
   - pull_request
 
 jobs:
   label:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/labeler@v2
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/labeler@v2
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"

@@ -13,11 +13,7 @@ import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataMongoTest(
-        properties = {
-                "embedded.mongodb.enabled=false"
-        }
-)
+@DataMongoTest
 @Slf4j
 @ContextConfiguration(initializers = {MongodbContainerInitializer.class})
 public class PostRepositoryWithManualTestcontainersTest {

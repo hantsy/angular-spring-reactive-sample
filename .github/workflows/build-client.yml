@@ -1,40 +1,39 @@
 name: Build Angular Client
 
-on: 
+on:
   push:
     paths-ignore:
-    - "docs/**"
+      - "docs/**"
+      - "server/**"
     branches:
-    - master
-    - release/*
+      - master
+      - release/*
   pull_request:
-    paths-ignore:
-    - "docs/**"
-    branches:
-    - master  
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
-      
   build-client:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup NodeJS
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: '14'
-        
-    - name: Install Dependencies & Build Docker Image
-      run: |
-        cd ./client 
-        npm install
-        npm run build 
-        docker build -t hantsy/angular-spring-reactive-sample-client . 
-      
-    - name: Login to DockerHub Registry
-      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin  
-      
-    - name: Push Docker Image
-      run: docker push hantsy/angular-spring-reactive-sample-client     
+      - uses: actions/checkout@v2
+      - name: Setup NodeJS
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "14"
+
+      - name: Install Dependencies & Build Docker Image
+        run: |
+          cd ./client
+          npm install
+          npm run build
+          docker build -t hantsy/angular-spring-reactive-sample-client .
+
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      - name: Push Docker Image
+        run: docker push hantsy/angular-spring-reactive-sample-client

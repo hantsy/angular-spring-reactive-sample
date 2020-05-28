@@ -15,11 +15,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication;
 
 @SpringBootTest(
-        webEnvironment = RANDOM_PORT,
-        properties = {
-                "embedded.mongodb.install.enabled=true",
-                "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
-        }
+        webEnvironment = RANDOM_PORT
 )
 public class IntegrationTests {
 
