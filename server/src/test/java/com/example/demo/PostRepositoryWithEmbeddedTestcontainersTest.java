@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataMongoTest
 @Slf4j
 @TestPropertySource( properties = {
+        "embedded.mongodb.enabled=true",
         "embedded.mongodb.install.enabled=true",
         "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
 })

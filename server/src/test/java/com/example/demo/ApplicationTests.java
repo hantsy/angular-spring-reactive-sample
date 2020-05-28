@@ -1,13 +1,16 @@
 package com.example.demo;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
@@ -18,6 +21,7 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
 import static org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication;
 
 @SpringBootTest
+@Slf4j
 public class ApplicationTests {
 
     @Autowired
@@ -25,8 +29,12 @@ public class ApplicationTests {
 
     WebTestClient client;
 
+    @Value("${embedded.mongodb.enabled}")
+    private String embeddedMongoEnabled;
+
     @BeforeEach
     public void setup() {
+        log.debug("\"${embedded.mongodb.enabled}\":" + embeddedMongoEnabled);
         client = WebTestClient
                 .bindToApplicationContext(context)
                 .apply(springSecurity())

@@ -54,6 +54,7 @@ jobs:
         run: |
           docker-compose up mongodb
           mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --file server/pom.xml -Pcoverage
+          docker-compose down mongodb
         env:
           # Needed to get some information about the pull request, if any
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
