@@ -20,7 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.springSecurity;
 import static org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "embedded.mongodb.enabled=true",
+        "embedded.mongodb.install.enabled=true",
+        "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
+})
 @Slf4j
 public class ApplicationTests {
 
@@ -83,7 +87,7 @@ public class ApplicationTests {
                 //mutate().filter(basicAuthentication("user", "password")).build()
                 .put()
                 .uri("/posts/none_existed")
-                .headers( httpHeaders -> httpHeaders.setBasicAuth("user", "password"))
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("user", "password"))
                 .body(BodyInserters.fromValue(Post.builder().title("updated title").content("updated content").build()))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
@@ -105,7 +109,7 @@ public class ApplicationTests {
                 //.mutate().filter(basicAuthentication("admin", "password")).build()
                 .delete()
                 .uri("/posts/none_existed")
-                .headers( httpHeaders -> httpHeaders.setBasicAuth("admin", "password"))
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("admin", "password"))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
     }
