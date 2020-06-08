@@ -37,10 +37,10 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Resolve dependencies
-        run: mvn clean dependency:go-offline --file server/pom.xml
+        run: mvn clean dependency:go-offline --file server/pom.xml -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 
       - name: Build with Maven
-        run: mvn package --file server/pom.xml -DskipTests
+        run: mvn package --file server/pom.xml -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 
       # - name: Cache SonarCloud packages
       #   uses: actions/cache@v1
@@ -62,7 +62,7 @@ jobs:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Build Docker Image
-        run: mvn spring-boot:build-image --file server/pom.xml -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+        run: mvn spring-boot:build-image --file server/pom.xml -DskipTests -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
