@@ -22,7 +22,7 @@ import static org.springframework.web.reactive.function.client.ExchangeFilterFun
 
 @SpringBootTest(properties = {
         "embedded.mongodb.enabled=true",
-        "embedded.mongodb.install.enabled=true",
+        "embedded.mongodb.install.enabled=false",
         "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
 })
 @Slf4j

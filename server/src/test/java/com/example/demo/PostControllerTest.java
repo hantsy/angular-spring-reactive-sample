@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.toList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
+@Disabled
 @WebFluxTest(
         controllers = PostController.class,
         excludeAutoConfiguration = {
