@@ -1,3 +1,6 @@
+![Build Client](https://github.com/hantsy/angular-spring-reactive-sample/workflows/Client/badge.svg)
+![Build Server Side](https://github.com/hantsy/angular-spring-reactive-sample/workflows/Server/badge.svg)
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
