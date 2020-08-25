@@ -1,4 +1,4 @@
-name: Build Backend APIs
+name: Server
 
 on:
   push:
