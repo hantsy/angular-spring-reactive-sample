@@ -1,5 +1,4 @@
-name: Build Angular Client
-
+name: Client
 on:
   push:
     paths-ignore:
