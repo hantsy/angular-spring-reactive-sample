@@ -120,9 +120,9 @@
                     <image>
                         <name>hantsy/${project.artifactId}:latest</name>
                         <verboseLogging>true</verboseLogging>
-                        <env>
+                        <!--<env>
                             <BP_JVM_VERSION>14.0.1</BP_JVM_VERSION>
-                        </env>
+                        </env>-->
                     </image>
                 </configuration>
             </plugin>
