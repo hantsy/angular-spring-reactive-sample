@@ -14,6 +14,12 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+I've also created a series of  projects to demo Angular and Spring WebFlux using other protocols:
+
+* [Angular and Websocket sample](https://github.com/hantsy/angular-spring-websocket-sample)
+* [Angular and Server Sent Event  sample](https://github.com/hantsy/angular-spring-sse-sample)
+* [Angular and RSocket  sample](https://github.com/hantsy/angular-spring-rsocket-sample)
+
 # Angular Spring Reactive Sample
 
 This application demonstrate building backend RESTful APIs with the newest Reactive stack introduced in Spring 5, and creating the frontend SPA with Angular 5.
@@ -26,7 +32,7 @@ This application demonstrate building backend RESTful APIs with the newest React
 * server - The backend RESTful APIs.
 
 
-## Build 
+## Build and Run
 
 Clone the source codes into your local system.
 
@@ -70,6 +76,26 @@ npm run start
 ```
 
 Open your favorite browser, and navigate to http://localhost:4200.
+
+## CORS
+
+By default, I do not use CORS config to run this sample application. But I have added an option now to demonstrate how to run with CORS configuration if you do not like to use a Proxy conf in Angular side.
+
+### Server
+
+Activate the **cors** profile when running the Spring Boot application.
+
+```bash
+java -jar target/app.jar --spring.profiles.active=cors
+```
+
+### Client
+
+There is a standalone configuration added to connect the backend directly.
+
+```bash
+npm run start:cors
+```
 
 ## Contribute
 

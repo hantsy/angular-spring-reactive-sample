@@ -11,4 +11,4 @@ spring:
 logging:
   level:
     com.example: DEBUG
-    org.springframework.web: INFO
+    org.springframework.web: DEBUG
