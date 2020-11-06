@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -36,7 +37,9 @@ public class Application {
 }
 
 @Configuration
+@Profile("cors")
 class WebConfig {
+
     @Bean
     CorsWebFilter corsWebFilter() {
         var corsConfiguration = new CorsConfiguration().applyPermitDefaultValues();
@@ -58,7 +61,7 @@ class SessionConfig {
 }
 
 @Configuration
-class MongoConfig{
+class MongoConfig {
 
     @Bean
     public PersistentEntityCallback persistentEntityCallback() {
