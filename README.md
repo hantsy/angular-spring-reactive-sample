@@ -79,7 +79,9 @@ Open your favorite browser, and navigate to http://localhost:4200.
 
 ## CORS
 
-By default, I do not use CORS config to run this sample application. But I have added an option now to demonstrate how to run with CORS configuration if you do not like to use a Proxy conf in Angular side.
+By default, I do not use a CORS config to run the Server side in this sample application. 
+
+But if you do not like to use a `proxy.conf.js` in the Angular config, follow the following steps to active cors support in the backend, and connect to the backend directly in the client side.
 
 ### Server
 
