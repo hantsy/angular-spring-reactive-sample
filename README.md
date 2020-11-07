@@ -97,7 +97,7 @@ There is a standalone configuration **cors** added in the Angular config to conn
 
 ```bash
 npm run start:cors
-```in 
+```
 
 ## Contribute
 
