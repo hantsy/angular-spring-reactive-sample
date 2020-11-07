@@ -93,11 +93,11 @@ java -jar target/app.jar --spring.profiles.active=cors
 
 ### Client
 
-There is a standalone configuration **cors** added to connect the backend directly.
+There is a standalone configuration **cors** added in the Angular config to connect to the backend directly.
 
 ```bash
 npm run start:cors
-```
+```in 
 
 ## Contribute
 
