@@ -5,16 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.testcontainers.containers.MongoDBContainer;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -52,6 +45,7 @@ public class PostRepositoryWithEmbeddedTestcontainersTest {
     @Test
     public void testSavePostByBlocking() {
         Post saved = this.postRepository.save(Post.builder().content("my test content").title("my test title").build()).block();
+        assert saved != null;
         assertThat(saved.getId()).isNotNull();
         assertThat(this.reactiveMongoTemplate.collectionExists(Post.class).block()).isTrue();
         assertThat(this.reactiveMongoTemplate.findById(saved.getId(), Post.class).block().getTitle()).isEqualTo("my test title");
