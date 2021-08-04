@@ -88,7 +88,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter</artifactId>
-            <version>2.2.2.RELEASE</version>
+            <version>3.0.3</version>
             <scope>test</scope>
         </dependency>
 
