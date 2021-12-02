@@ -25,5 +25,6 @@ nbdist/
 
 node_modules
 dist/
-/client/package-lock.json
-/client/.vscode
+package-lock.json
+.vscode
+.angular/
