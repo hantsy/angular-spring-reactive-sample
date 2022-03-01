@@ -38,8 +38,8 @@ jobs:
           npm run build
           docker build -t hantsy/angular-spring-reactive-sample-client .
 
-      - name: Login to DockerHub Registry
-        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+#       - name: Login to DockerHub Registry
+#         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-      - name: Push Docker Image
-        run: docker push hantsy/angular-spring-reactive-sample-client
+#       - name: Push Docker Image
+#         run: docker push hantsy/angular-spring-reactive-sample-client
