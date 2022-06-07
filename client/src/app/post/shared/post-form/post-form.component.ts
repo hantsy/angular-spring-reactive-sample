@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  Input,
-  Output,
-  EventEmitter
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Post } from '../post.model';
@@ -14,7 +7,7 @@ import { PostService } from '../post.service';
 @Component({
   selector: 'app-post-form',
   templateUrl: './post-form.component.html',
-  styleUrls: ['./post-form.component.css']
+  styleUrls: ['./post-form.component.css'],
 })
 export class PostFormComponent implements OnInit, OnDestroy {
   @Input() post: Post = { title: '', content: '' };
@@ -26,27 +19,27 @@ export class PostFormComponent implements OnInit, OnDestroy {
   submit() {
     const _body = {
       title: this.post.title,
-      content: this.post.content
+      content: this.post.content,
     } as Post;
 
     if (this.post.id) {
-      this.postService.updatePost(this.post.id, _body).subscribe(
-        data => {
+      this.postService.updatePost(this.post.id, _body).subscribe({
+        next: (data) => {
           this.saved.emit(true);
         },
-        error => {
+        error: (error) => {
           this.saved.emit(false);
-        }
-      );
+        },
+      });
     } else {
-      this.postService.savePost(_body).subscribe(
-        data => {
+      this.postService.savePost(_body).subscribe({
+        next: (data) => {
           this.saved.emit(true);
         },
-        error => {
+        error: (error) => {
           this.saved.emit(false);
-        }
-      );
+        },
+      });
     }
   }
 

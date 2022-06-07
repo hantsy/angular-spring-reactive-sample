@@ -11,17 +11,16 @@ import { DialogComponent } from './dialog/dialog.component';
 import { LoadGuard } from './core/load-guard';
 
 @NgModule({
-  declarations: [AppComponent, DialogComponent],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    CoreModule,
-    SharedModule,
-    AppRoutingModule,
-    HomeModule
-  ],
-  entryComponents: [DialogComponent],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [AppComponent, DialogComponent],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        CoreModule,
+        SharedModule,
+        AppRoutingModule,
+        HomeModule
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
