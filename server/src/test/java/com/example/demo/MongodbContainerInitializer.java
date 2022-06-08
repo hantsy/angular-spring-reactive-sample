@@ -11,7 +11,7 @@ import org.testcontainers.containers.MongoDBContainer;
 @Slf4j
 class MongodbContainerInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
     public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-        var mongoDBContainer = new MongoDBContainer();
+        var mongoDBContainer = new MongoDBContainer("mongo:4");
         mongoDBContainer.start();
 
         configurableApplicationContext
