@@ -1,7 +1,10 @@
 package com.example.demo.domain.model;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
@@ -13,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment implements PersistentEntity, Serializable {
+public class Comment implements Serializable {
 
     @Id
     private String id;
@@ -23,12 +26,16 @@ public class Comment implements PersistentEntity, Serializable {
 
     private PostId post;
 
+    @CreatedDate
     private LocalDateTime createdDate;
 
+    @CreatedBy
     private Username createdBy;
 
+    @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
+    @LastModifiedBy
     private Username lastModifiedBy;
 
 }

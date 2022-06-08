@@ -7,11 +7,12 @@ import org.springframework.web.server.session.WebSessionIdResolver;
 
 @Configuration
 class SessionConfig {
+    public final static String xAuthToken = "X-AUTH-TOKEN";
 
     @Bean
     public WebSessionIdResolver webSessionIdResolver() {
-        HeaderWebSessionIdResolver resolver = new HeaderWebSessionIdResolver();
-        resolver.setHeaderName("X-AUTH-TOKEN");
+        var resolver = new HeaderWebSessionIdResolver();
+        resolver.setHeaderName(xAuthToken);
         return resolver;
     }
 }

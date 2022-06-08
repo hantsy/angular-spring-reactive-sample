@@ -16,7 +16,7 @@ import static com.example.demo.domain.model.Post.Status.DRAFT;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Post implements PersistentEntity, Serializable {
+public class Post implements Serializable {
 
     @Id
     private String id;
@@ -30,17 +30,16 @@ public class Post implements PersistentEntity, Serializable {
     @Builder.Default
     private Status status = DRAFT;
 
-    //@CreatedDate
-    //@Builder.Default
+    @CreatedDate
     private LocalDateTime createdDate;
 
-    //@CreatedBy
+    @CreatedBy
     private Username createdBy;
 
-    //@LastModifiedDate
+    @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
-    //@LastModifiedBy
+    @LastModifiedBy
     private Username lastModifiedBy;
 
     public enum Status {
