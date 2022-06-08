@@ -1,5 +1,13 @@
-package com.example.demo;
+package com.example.demo.web;
 
+import com.example.demo.domain.model.Comment;
+import com.example.demo.domain.model.Post;
+import com.example.demo.domain.model.PostId;
+import com.example.demo.domain.repository.CommentRepository;
+import com.example.demo.domain.repository.PostRepository;
+import com.example.demo.web.dto.CommentForm;
+import com.example.demo.web.dto.CountValue;
+import com.example.demo.web.dto.StatusUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,12 +20,12 @@ import java.util.Optional;
 
 import static java.util.Comparator.comparing;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.ResponseEntity.*;
+import static org.springframework.http.ResponseEntity.created;
 
 @RestController()
 @RequestMapping(value = "/posts")
 @RequiredArgsConstructor
-class PostController {
+public class PostController {
 
     private final PostRepository posts;
 

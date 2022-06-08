@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;

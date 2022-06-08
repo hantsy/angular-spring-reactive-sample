@@ -1,5 +1,14 @@
 package com.example.demo;
 
+import com.example.demo.domain.model.Comment;
+import com.example.demo.domain.model.Post;
+import com.example.demo.domain.model.PostId;
+import com.example.demo.domain.repository.CommentRepository;
+import com.example.demo.domain.repository.PostRepository;
+
+import com.example.demo.web.dto.CommentForm;
+import com.example.demo.web.PostController;
+import com.example.demo.web.dto.StatusUpdateRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;

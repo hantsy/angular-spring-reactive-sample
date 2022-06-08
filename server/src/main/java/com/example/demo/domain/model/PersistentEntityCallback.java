@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.domain.model;
 
 import org.reactivestreams.Publisher;
 import org.springframework.data.mongodb.core.mapping.event.ReactiveBeforeConvertCallback;
@@ -6,7 +6,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
