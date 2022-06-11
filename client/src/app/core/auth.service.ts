@@ -1,14 +1,13 @@
-import { Injectable, Inject } from '@angular/core';
-import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { Observable ,  BehaviorSubject ,  ReplaySubject,  } from 'rxjs';
-import { tap , distinctUntilChanged, map } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 
-import { User } from './user.model';
-import { TokenStorage } from './token-storage';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
 import { Credentials } from './credentials.model';
+import { TokenStorage } from './token-storage';
+import { User } from './user.model';
 
 const apiUrl = environment.baseApiUrl + '/auth';
 
@@ -19,7 +18,7 @@ interface State {
 
 const defaultState: State = {
   user: null,
-  authenticated: false
+  authenticated: false,
 };
 
 const _store = new BehaviorSubject<State>(defaultState);
@@ -48,45 +47,41 @@ class Store {
 
 @Injectable()
 export class AuthService {
-
   private store: Store = new Store();
 
-  constructor(
-    private http: HttpClient,
-    private jwt: TokenStorage,
-    private router: Router) {
-  }
+  constructor(private http: HttpClient, private jwt: TokenStorage, private router: Router) {}
 
   attempAuth(credentials: Credentials): Observable<any> {
-    const headers = new HttpHeaders()
-      .set('Authorization', 'Basic ' + btoa(credentials.username + ':' + credentials.password));
+    const headers = new HttpHeaders().set(
+      'Authorization',
+      'Basic ' + btoa(credentials.username + ':' + credentials.password),
+    );
 
     console.log('attempAuth ::');
     console.log(headers);
-    return this.http.get<User>(`${apiUrl}/user`, { headers })
-      .pipe(
-      tap(data => {
+    return this.http.get<User>(`${apiUrl}/user`, { headers }).pipe(
+      tap((data) => {
         console.log('do::');
         console.log(data);
         this.store.setState({
-          user: data, authenticated: Boolean(data)
+          user: data,
+          authenticated: Boolean(data),
         });
-      })
-      );
+      }),
+    );
   }
 
   verifyAuth(): void {
-
     if (this.jwt.get()) {
-      this.http.get<User>(`${apiUrl}/user`).subscribe(
-        data => {
+      this.http.get<User>(`${apiUrl}/user`).subscribe({
+        next: (data) => {
           this.store.setState({ user: data, authenticated: Boolean(data) });
         },
-        err => {
+        error: (err) => {
           this.jwt.destroy();
           this.store.purge();
-        }
-      );
+        },
+      });
     } else {
       // token is not found in local storage.
       this.jwt.destroy();
@@ -95,26 +90,18 @@ export class AuthService {
   }
 
   signout() {
-    this.http.get<any>(`${apiUrl}/logout`).subscribe(
-      (data) => {
-        // reset the initial values
-        this.jwt.destroy();
-        this.store.purge();
-      }
-    );
-
+    this.http.get<any>(`${apiUrl}/logout`).subscribe((data) => {
+      // reset the initial values
+      this.jwt.destroy();
+      this.store.purge();
+    });
   }
 
   currentUser(): Observable<User> {
-    return this.store.changes.pipe(
-      map(data => data.user)
-    );
+    return this.store.changes.pipe(map((data) => data.user));
   }
 
   isAuthenticated(): Observable<boolean> {
-    return this.store.changes.pipe(
-      map(data => data.authenticated)
-    );
+    return this.store.changes.pipe(map((data) => data.authenticated));
   }
-
 }

@@ -1,20 +1,8 @@
 // Http testing module and mocking controller
-import {
-  HttpClientTestingModule,
-  HttpTestingController
-} from '@angular/common/http/testing';
-import {
-  HttpClient,
-  HttpClientModule,
-  HttpErrorResponse
-} from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { TestBed, async, inject } from '@angular/core/testing';
-import {
-  BaseRequestOptions,
-  Http,
-  Response,
-  ResponseOptions
-} from '@angular/http';
+import { BaseRequestOptions, Http, Response, ResponseOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 
 import { PostService } from './post.service';
@@ -27,20 +15,20 @@ const posts = [
     id: '1',
     title: 'Getting started with REST',
     content: 'Content of Getting started with REST',
-    createdDate: '9/22/16 4:15 PM'
+    createdDate: '9/22/16 4:15 PM',
   },
   {
     id: '2',
     title: 'Getting started with AngularJS 1.x',
     content: 'Content of Getting started with AngularJS 1.x',
-    createdDate: '9/22/16 4:15 PM'
+    createdDate: '9/22/16 4:15 PM',
   },
   {
     id: '3',
     title: 'Getting started with Angular 2',
     content: 'Content of Getting started with Angular2',
-    createdDate: '9/22/16 4:15 PM'
-  }
+    createdDate: '9/22/16 4:15 PM',
+  },
 ] as Post[];
 
 describe('Service: Post', () => {
@@ -54,7 +42,7 @@ describe('Service: Post', () => {
       // Import the HttpClient mocking services
       imports: [HttpClientTestingModule],
       // Provide the service-under-test and its dependencies
-      providers: [PostService, HttpErrorHandler, MessageService]
+      providers: [PostService, HttpErrorHandler, MessageService],
     });
 
     // Inject the http, test controller, and service-under-test
@@ -84,11 +72,7 @@ describe('Service: Post', () => {
     it('should get posts...', () => {
       postService
         .getPosts()
-        .subscribe(
-          res =>
-            expect(res).toEqual(expectedPosts, 'should return exptected posts'),
-          fail
-        );
+        .subscribe((res) => expect(res).toEqual(expectedPosts, 'should return exptected posts'), fail);
 
       // PostService should have made one request to GET data from expected URL
       const req = httpTestingController.expectOne(postService.apiUrl);
@@ -99,12 +83,7 @@ describe('Service: Post', () => {
     });
 
     it('should be OK returning no posts', () => {
-      postService
-        .getPosts()
-        .subscribe(
-          res => expect(res.length).toEqual(0, 'should have empty posts array'),
-          fail
-        );
+      postService.getPosts().subscribe((res) => expect(res.length).toEqual(0, 'should have empty posts array'), fail);
 
       const req = httpTestingController.expectOne(postService.apiUrl);
       req.flush([]); // Respond with no posts
@@ -115,11 +94,7 @@ describe('Service: Post', () => {
       postService.getPosts().subscribe();
       postService
         .getPosts()
-        .subscribe(
-          data =>
-            expect(data).toEqual(expectedPosts, 'should return expected data'),
-          fail
-        );
+        .subscribe((data) => expect(data).toEqual(expectedPosts, 'should return expected data'), fail);
 
       const requests = httpTestingController.match(postService.apiUrl);
       expect(requests.length).toEqual(3, 'calls to getPosts()');
@@ -131,8 +106,8 @@ describe('Service: Post', () => {
           id: '1',
           title: 'Getting started with REST',
           content: 'Content of Getting started with REST',
-          createdDate: '9/22/16 4:15 PM'
-        }
+          createdDate: '9/22/16 4:15 PM',
+        },
       ]);
       requests[2].flush(expectedPosts);
     });
@@ -149,11 +124,7 @@ describe('Service: Post', () => {
     it('should get post...', () => {
       postService
         .getPost('1')
-        .subscribe(
-          res =>
-            expect(res).toEqual(expectedPost, 'should return exptected post'),
-          fail
-        );
+        .subscribe((res) => expect(res).toEqual(expectedPost, 'should return exptected post'), fail);
 
       // PostService should have made one request to GET data from expected URL
       const req = httpTestingController.expectOne(postService.apiUrl + '/1');
@@ -165,16 +136,12 @@ describe('Service: Post', () => {
 
     // This service reports the error but finds a way to let the app keep going.
     it('should return 404 if the post is not found', () => {
-      postService
-        .getPost('notfound')
-        .subscribe(
-          data => console.log(data),
-          error => expect(error.status === 404)
-        );
-
-      const req = httpTestingController.expectOne(
-        postService.apiUrl + '/notfound'
+      postService.getPost('notfound').subscribe(
+        (data) => console.log(data),
+        (error) => expect(error.status === 404),
       );
+
+      const req = httpTestingController.expectOne(postService.apiUrl + '/notfound');
 
       // respond with a 404 and the error message in the body
       const msg = 'deliberate 404 error';
@@ -193,11 +160,7 @@ describe('Service: Post', () => {
     it('should save post...', () => {
       postService
         .savePost(expectedPost)
-        .subscribe(
-          res =>
-            expect(res).toEqual(expectedPost, 'should return exptected post'),
-          fail
-        );
+        .subscribe((res) => expect(res).toEqual(expectedPost, 'should return exptected post'), fail);
 
       // PostService should have made one request to GET data from expected URL
       const req = httpTestingController.expectOne(postService.apiUrl);
@@ -219,10 +182,7 @@ describe('Service: Post', () => {
     it('should update post...', () => {
       postService
         .updatePost('1', expectedPost)
-        .subscribe(
-          res => expect(res).toEqual({}, 'should return exptected post'),
-          fail
-        );
+        .subscribe((res) => expect(res).toEqual({}, 'should return exptected post'), fail);
 
       // PostService should have made one request to GET data from expected URL
       const req = httpTestingController.expectOne(postService.apiUrl + '/1');
@@ -233,16 +193,12 @@ describe('Service: Post', () => {
     });
 
     it('should return 404 if the post is not found', () => {
-      postService
-        .updatePost('notfound', expectedPost)
-        .subscribe(
-          data => console.log(data),
-          error => expect(error.status === 404)
-        );
-
-      const req = httpTestingController.expectOne(
-        postService.apiUrl + '/notfound'
+      postService.updatePost('notfound', expectedPost).subscribe(
+        (data) => console.log(data),
+        (error) => expect(error.status === 404),
       );
+
+      const req = httpTestingController.expectOne(postService.apiUrl + '/notfound');
 
       // respond with a 404 and the error message in the body
       const msg = 'deliberate 404 error';
@@ -261,14 +217,7 @@ describe('Service: Post', () => {
     it('should delete post...', () => {
       postService
         .deletePost('1')
-        .subscribe(
-          res =>
-            expect(res).toEqual(
-              {},
-              'should return nothing if it is deleted successful'
-            ),
-          fail
-        );
+        .subscribe((res) => expect(res).toEqual({}, 'should return nothing if it is deleted successful'), fail);
 
       // PostService should have made one request to GET data from expected URL
       const req = httpTestingController.expectOne(postService.apiUrl + '/1');
@@ -279,16 +228,12 @@ describe('Service: Post', () => {
     });
 
     it('should return 404 if the post is not found', () => {
-      postService
-        .deletePost('notfound')
-        .subscribe(
-          data => console.log(data),
-          error => expect(error.status === 404)
-        );
-
-      const req = httpTestingController.expectOne(
-        postService.apiUrl + '/notfound'
+      postService.deletePost('notfound').subscribe(
+        (data) => console.log(data),
+        (error) => expect(error.status === 404),
       );
+
+      const req = httpTestingController.expectOne(postService.apiUrl + '/notfound');
 
       // respond with a 404 and the error message in the body
       const msg = 'deliberate 404 error';

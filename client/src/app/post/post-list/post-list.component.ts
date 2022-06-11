@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Post } from '../shared/post.model';
-import { Subscription } from 'rxjs';
-import { PostService } from '../shared/post.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+
+import { Post } from '../shared/post.model';
+import { PostService } from '../shared/post.service';
 
 @Component({
   selector: 'app-post-list',
@@ -20,9 +21,10 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   search() {
     this.sub = this.postService.getPosts({ q: this.q })
-    .subscribe(
-      data => this.posts = data,
-      err => console.log(err)
+    .subscribe({
+      next:data => this.posts = data,
+      error: err => console.log(err)
+    }
     );
   }
 

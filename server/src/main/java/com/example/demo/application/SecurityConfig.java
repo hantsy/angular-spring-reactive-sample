@@ -21,9 +21,7 @@ class SecurityConfig {
     SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) throws Exception {
 
         return http
-                .csrf(it ->
-                        it.disable()
-                )
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .httpBasic(it ->
                         it.securityContextRepository(new WebSessionServerSecurityContextRepository())
                 )
