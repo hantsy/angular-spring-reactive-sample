@@ -1,0 +1,17 @@
+# see https://docs.docker.com/compose/compose-file/compose-versioning/
+version: "3.5" # specify docker-compose version, v3.5 is compatible with docker 17.12.0+
+
+# Define the services/containers to be run
+services:
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: blogdb
+      POSTGRES_USER: user
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql
+      - ./pg-initdb.d:/docker-entrypoint-initdb.d
