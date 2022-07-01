@@ -25,6 +25,7 @@ class CommentController(
     @DeleteMapping("/{id}")
     suspend fun deleteComment(@PathVariable id: UUID): ResponseEntity<Any> {
         if (!comments.existsById(id)) throw CommentNotFoundException(id)
+        comments.deleteById(id)
         return noContent().build()
     }
 }
