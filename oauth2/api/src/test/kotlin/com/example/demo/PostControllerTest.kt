@@ -1,5 +1,6 @@
 package com.example.demo
 
+import com.example.demo.application.SecurityConfig
 import com.example.demo.application.ValidationConfig
 import com.example.demo.domain.model.Post
 import com.example.demo.domain.repository.CommentRepository
@@ -34,7 +35,7 @@ import java.util.*
 class PostControllerTest {
 
     @TestConfiguration
-    @Import(ValidationConfig::class)
+    @Import(ValidationConfig::class, SecurityConfig::class)
     class TestConfig
 
     @MockkBean
@@ -83,7 +84,7 @@ class PostControllerTest {
                 )
 
         val id = UUID.randomUUID()
-        client.mutateWith(csrf()).get()
+        client.get()
             .uri("/posts/$id").accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk
@@ -115,7 +116,8 @@ class PostControllerTest {
                     content = "test content"
                 )
 
-        client.mutateWith(csrf())
+        client
+            //.mutateWith(csrf())
             .mutateWith(mockJwt().authorities(SimpleGrantedAuthority("SCOPE_write:posts")))
             .post()
             .uri("/posts").contentType(MediaType.APPLICATION_JSON)
@@ -152,7 +154,8 @@ class PostControllerTest {
         val authorities: Collection<GrantedAuthority> = AuthorityUtils.createAuthorityList("SCOPE_write:posts")
         val token = JwtAuthenticationToken(jwt, authorities)
 
-        client.mutateWith(csrf())
+        client
+            //.mutateWith(csrf())
             .mutateWith(mockAuthentication<JwtMutator>(token))
             .put()
             .uri("/posts/$id").contentType(MediaType.APPLICATION_JSON)
@@ -174,7 +177,8 @@ class PostControllerTest {
                 )
         coEvery { posts.delete(any<Post>()) } returns Unit
 
-        client.mutateWith(csrf())
+        client
+            //.mutateWith(csrf())
             .mutateWith(mockJwt()
                 .jwt { it.audience(listOf(audience)).build() }
                 .authorities(SimpleGrantedAuthority("SCOPE_delete:posts"))
