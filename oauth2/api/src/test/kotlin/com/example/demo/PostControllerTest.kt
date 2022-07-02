@@ -1,5 +1,6 @@
 package com.example.demo
 
+import com.example.demo.application.ValidationConfig
 import com.example.demo.domain.model.Post
 import com.example.demo.domain.repository.CommentRepository
 import com.example.demo.domain.repository.PostRepository
@@ -13,8 +14,17 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.AuthorityUtils
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
+import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.*
 import org.springframework.test.web.reactive.server.WebTestClient
 import java.util.*
 
@@ -22,6 +32,10 @@ import java.util.*
 @WebFluxTest(value = [PostController::class])
 //@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class PostControllerTest {
+
+    @TestConfiguration
+    @Import(ValidationConfig::class)
+    class TestConfig
 
     @MockkBean
     private lateinit var posts: PostRepository
@@ -31,6 +45,9 @@ class PostControllerTest {
 
     @Autowired
     private lateinit var client: WebTestClient
+
+    @Value("\${auth0.audience}")
+    private lateinit var audience: String
 
     @BeforeEach
     fun setup() {
@@ -46,7 +63,8 @@ class PostControllerTest {
             )
         )
 
-        client.get()
+        client
+            .get()
             .uri("/posts").accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk
@@ -65,7 +83,7 @@ class PostControllerTest {
                 )
 
         val id = UUID.randomUUID()
-        client.get()
+        client.mutateWith(csrf()).get()
             .uri("/posts/$id").accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk
@@ -93,17 +111,18 @@ class PostControllerTest {
         coEvery { posts.save(any<Post>()) } returns
                 Post(
                     id = id,
-                    title = "update title",
-                    content = "update content"
+                    title = "test title",
+                    content = "test content"
                 )
 
-        client.post()
+        client.mutateWith(csrf())
+            .mutateWith(mockJwt().authorities(SimpleGrantedAuthority("SCOPE_write:posts")))
+            .post()
             .uri("/posts").contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(Post(title = "update title", content = "update content"))
+            .bodyValue(Post(title = "test title", content = "test content"))
             .exchange()
             .expectStatus().isCreated
             .expectHeader().location("/posts/$id")
-
 
         coVerify(exactly = 1) { posts.save(any<Post>()) }
     }
@@ -124,7 +143,18 @@ class PostControllerTest {
                     content = "test content"
                 )
 
-        client.put()
+        // alternatively use `mockAuthentication` instead.
+        val jwt = Jwt.withTokenValue("token")
+            .header("alg", "none")
+            .claim("sub", "user")
+            .audience(listOf(audience))
+            .build()
+        val authorities: Collection<GrantedAuthority> = AuthorityUtils.createAuthorityList("SCOPE_write:posts")
+        val token = JwtAuthenticationToken(jwt, authorities)
+
+        client.mutateWith(csrf())
+            .mutateWith(mockAuthentication<JwtMutator>(token))
+            .put()
             .uri("/posts/$id").contentType(MediaType.APPLICATION_JSON)
             .bodyValue(Post(title = "test title", content = "test content"))
             .exchange()
@@ -136,14 +166,26 @@ class PostControllerTest {
     @Test
     fun `delete a post`() = runTest {
         val id = UUID.randomUUID()
-        coEvery { posts.deleteById(any<UUID>()) } returns Unit
+        coEvery { posts.findById(any<UUID>()) } returns
+                Post(
+                    id = id,
+                    title = "test title",
+                    content = "test content"
+                )
+        coEvery { posts.delete(any<Post>()) } returns Unit
 
-        client.delete()
+        client.mutateWith(csrf())
+            .mutateWith(mockJwt()
+                .jwt { it.audience(listOf(audience)).build() }
+                .authorities(SimpleGrantedAuthority("SCOPE_delete:posts"))
+            )
+            .delete()
             .uri("/posts/$id")
             .exchange()
             .expectStatus().isNoContent
 
-        coVerify(exactly = 1) { posts.deleteById(id) }
+        coVerify(exactly = 1) { posts.findById(id) }
+        coVerify(exactly = 1) { posts.delete(any<Post>()) }
     }
 
 }

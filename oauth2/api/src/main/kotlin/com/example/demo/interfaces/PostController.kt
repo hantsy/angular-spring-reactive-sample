@@ -33,8 +33,8 @@ class PostController(
     @PostMapping
     suspend fun create(@RequestBody @Valid data: CreatePostCommand): ResponseEntity<Any> {
         val post = Post(title = data.title, content = data.content)
-        val savedPost = posts.save(post)
-        return created(URI.create("/posts/${savedPost.id}")).build()
+        val saved = posts.save(post)
+        return created(URI.create("/posts/${saved.id}")).build()
     }
 
     @GetMapping("/{id}")

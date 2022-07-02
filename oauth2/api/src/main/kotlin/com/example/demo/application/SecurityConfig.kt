@@ -50,7 +50,7 @@ class SecurityConfig {
         }
 
     @Bean
-    fun jwtDecoder(
+    fun reactiveJwtDecoder(
         properties: OAuth2ResourceServerProperties,
         @Value("\${auth0.audience}") audience: String,
     ): ReactiveJwtDecoder {

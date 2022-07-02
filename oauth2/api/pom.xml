@@ -15,7 +15,7 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
-		<kotlin.version>1.7.0</kotlin.version>
+		<kotlin.version>1.6.21</kotlin.version>
 		<kotlin-coroutines.version>1.6.3</kotlin-coroutines.version>
 		<testcontainers.version>1.17.3</testcontainers.version>
 	</properties>
@@ -84,6 +84,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
@@ -112,6 +116,11 @@
 		<dependency>
 			<groupId>io.kotest</groupId>
 			<artifactId>kotest-assertions-core-jvm</artifactId>
+			<version>5.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>io.kotest</groupId>
+			<artifactId>kotest-framework-concurrency</artifactId>
 			<version>5.3.1</version>
 		</dependency>
 		<dependency>
