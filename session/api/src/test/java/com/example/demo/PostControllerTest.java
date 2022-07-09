@@ -1,19 +1,23 @@
 package com.example.demo;
 
+import com.example.demo.application.SecurityConfig;
 import com.example.demo.domain.model.Comment;
 import com.example.demo.domain.model.Post;
+import com.example.demo.domain.model.Status;
 import com.example.demo.domain.repository.CommentRepository;
 import com.example.demo.domain.repository.PostRepository;
-import com.example.demo.web.PostController;
-import com.example.demo.web.dto.CommentForm;
-import com.example.demo.web.dto.StatusUpdateRequest;
+import com.example.demo.domain.repository.UserRepository;
+import com.example.demo.interfaces.PostController;
+import com.example.demo.interfaces.dto.CommentForm;
+import com.example.demo.interfaces.dto.StatusUpdateRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Flux;
@@ -30,10 +34,6 @@ import static org.mockito.Mockito.*;
 
 @WebFluxTest(
         controllers = PostController.class,
-        excludeAutoConfiguration = {
-                ReactiveUserDetailsServiceAutoConfiguration.class,
-                ReactiveSecurityAutoConfiguration.class
-        },
         properties = {
                 "embedded.mongodb.enabled=false"
         }
@@ -41,11 +41,22 @@ import static org.mockito.Mockito.*;
 @Slf4j
 public class PostControllerTest {
 
+    @TestConfiguration
+    @Import(SecurityConfig.class)
+    static class TestConfig {
+    }
+
     @Autowired
     WebTestClient client;
 
     @MockBean
     PostRepository posts;
+
+    @MockBean
+    UserRepository users;
+
+    @MockBean
+    PasswordEncoder passwordEncoder;
 
     @MockBean
     CommentRepository comments;
@@ -74,7 +85,7 @@ public class PostControllerTest {
     @Test
     public void getAllPosts_shouldBeOk() {
         given(posts.findAll())
-                .willReturn(Flux.just(Post.builder().id("1").title("my first post").content("content of my first post").createdDate(LocalDateTime.now()).status(Post.Status.PUBLISHED).build()));
+                .willReturn(Flux.just(Post.builder().id("1").title("my first post").content("content of my first post").createdDate(LocalDateTime.now()).status(Status.PUBLISHED).build()));
 
         client.get().uri("/posts").exchange()
                 .expectStatus().isOk()
@@ -94,7 +105,7 @@ public class PostControllerTest {
                         .id("" + n)
                         .title("my " + n + " first post")
                         .content("content of my " + n + " first post")
-                        .status(Post.Status.PUBLISHED)
+                        .status(Status.PUBLISHED)
                         .createdDate(LocalDateTime.now())
                         .build())
                 .collect(toList());
@@ -186,10 +197,9 @@ public class PostControllerTest {
     public void updatePostStatus_shouldBeOk() {
         Post post = Post.builder().id("1").title("my first post").content("content of my first post").createdDate(LocalDateTime.now()).build();
 
-        given(posts.findById("1"))
-                .willReturn(Mono.just(post));
+        given(posts.findById("1")).willReturn(Mono.just(post));
 
-        post.setStatus(Post.Status.PUBLISHED);
+        post.setStatus(Status.PUBLISHED);
 
         given(posts.save(post))
                 .willReturn(Mono.just(Post.builder().id("1").title("updated title").content("updated content").createdDate(LocalDateTime.now()).build()));

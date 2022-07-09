@@ -1,7 +1,7 @@
-package com.example.demo.web;
+package com.example.demo.domain.exception;
 
 public class PostNotFoundException extends RuntimeException {
     public PostNotFoundException(String id) {
-        super("Post:" + id +" is not found.");
+        super("Post #" + id + " was not found.");
     }
 }

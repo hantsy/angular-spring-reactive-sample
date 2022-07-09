@@ -1,15 +1,19 @@
 package com.example.demo;
 
+import com.example.demo.application.SessionConfig;
 import com.example.demo.domain.model.Comment;
 import com.example.demo.domain.model.Post;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
+import java.util.Map;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,6 +28,7 @@ import static org.springframework.web.reactive.function.client.ExchangeFilterFun
                 "spring.data.mongodb.uri=mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}"
         }
 )
+@Slf4j
 public class IntegrationTests {
 
     @LocalServerPort
@@ -31,12 +36,19 @@ public class IntegrationTests {
 
     WebTestClient client;
 
+    String token;
+
     @BeforeEach
     public void setup() {
         client = WebTestClient
                 .bindToServer()
                 .baseUrl("http://localhost:" + port)
                 .build();
+        var exchangeResult = client.post().uri("/login").bodyValue(Map.of("username", "uesr", "password", "password"))
+                .exchange().returnResult(Object.class);
+        var headers = exchangeResult.getResponseHeaders();
+        log.debug("headers: {}", headers);
+        token = headers.get(SessionConfig.xAuthToken).get(0);
     }
 
     @Test
@@ -70,7 +82,7 @@ public class IntegrationTests {
     @Test
     public void updateNoneExistedPostWithUserRole_shouldReturn404() {
         client
-                .mutate().filter(basicAuthentication("user", "password")).build()
+                .mutate().defaultHeaders(httpHeaders -> httpHeaders.set(SessionConfig.xAuthToken, token)).build()
                 .put()
                 .uri("/posts/none_existed")
                 .body(BodyInserters.fromValue(Post.builder().title("updated title").content("updated content").build()))
@@ -81,7 +93,7 @@ public class IntegrationTests {
     @Test
     public void deletePostWithUserRole_shouldReturn403() {
         client
-                .mutate().filter(basicAuthentication("user", "password")).build()
+                .mutate().defaultHeaders(httpHeaders -> httpHeaders.set(SessionConfig.xAuthToken, token)).build()
                 .delete()
                 .uri("/posts/1")
                 .exchange()
@@ -91,7 +103,7 @@ public class IntegrationTests {
     @Test
     public void deleteNoneExistedPostWithAdminRole_shouldReturn404() {
         client
-                .mutate().filter(basicAuthentication("admin", "password")).build()
+                .mutate().defaultHeaders(httpHeaders -> httpHeaders.set(SessionConfig.xAuthToken, token)).build()
                 .delete()
                 .uri("/posts/none_existed")
                 .exchange()
@@ -106,7 +118,7 @@ public class IntegrationTests {
 
 
         var result = client
-                .mutate().filter(basicAuthentication("user", "password")).build()
+                .mutate().defaultHeaders(httpHeaders -> httpHeaders.set(SessionConfig.xAuthToken, token)).build()
                 .post()
                 .uri("/posts")
                 .bodyValue(Post.builder().title(title).content(content).build())
@@ -134,7 +146,7 @@ public class IntegrationTests {
 
         // added comment
         client
-                .mutate().filter(basicAuthentication("user", "password")).build()
+                .mutate().defaultHeaders(httpHeaders -> httpHeaders.set(SessionConfig.xAuthToken, token)).build()
                 .post()
                 .uri(savedPostUri + "/comments")
                 .bodyValue(Comment.builder().content("my comments").build())
@@ -176,14 +188,14 @@ public class IntegrationTests {
 
 
         client
-                .mutate().filter(basicAuthentication("user", "password")).build()
+                .mutate().defaultHeaders(httpHeaders -> httpHeaders.set(SessionConfig.xAuthToken, token)).build()
                 .delete()
                 .uri(savedPostUri)
                 .exchange()
                 .expectStatus().isForbidden();
 
         client
-                .mutate().filter(basicAuthentication("admin", "password")).build()
+                .mutate().defaultHeaders(httpHeaders -> httpHeaders.set(SessionConfig.xAuthToken, token)).build()
                 .delete()
                 .uri(savedPostUri)
                 .exchange()

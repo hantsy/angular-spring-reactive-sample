@@ -1,7 +1,7 @@
 package com.example.demo.application;
 
 import com.example.demo.domain.repository.UserRepository;
-import com.example.demo.web.dto.LoginRequest;
+import com.example.demo.interfaces.dto.LoginRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -39,13 +39,13 @@ import static org.springframework.security.web.server.util.matcher.ServerWebExch
 
 @Configuration
 @Slf4j
-class SecurityConfig {
+public class SecurityConfig {
 
     @Bean
     SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http,
                                                 ServerSecurityContextRepository serverSecurityContextRepository,
                                                 AuthenticationWebFilter loginFilter,
-                                                LogoutWebFilter logoutFilter) throws Exception {
+                                                LogoutWebFilter logoutFilter) {
 
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
@@ -127,7 +127,7 @@ class SecurityConfig {
         var filter = new LogoutWebFilter();
         filter.setLogoutHandler((webFilterExchange, authentication) ->
                 webFilterExchange.getExchange().getSession()
-                        .flatMap(WebSession::invalidate)
+                        .flatMap(WebSession::invalidate).then()
         );
         filter.setLogoutSuccessHandler((webFilterExchange, authentication) -> {
             webFilterExchange.getExchange().getResponse().setStatusCode(HttpStatus.OK);

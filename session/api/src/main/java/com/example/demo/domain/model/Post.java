@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import static com.example.demo.domain.model.Post.Status.DRAFT;
+import static com.example.demo.domain.model.Status.DRAFT;
 
 @Document
 @Data
@@ -40,27 +40,12 @@ public class Post implements Serializable {
     private LocalDateTime createdDate;
 
     @CreatedBy
-    private Username createdBy;
+    private String createdBy;
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
     @LastModifiedBy
-    private Username lastModifiedBy;
+    private String lastModifiedBy;
 
-    public Post addComment(Comment c) {
-        this.comments.add(c);
-        return this;
-    }
-
-    public Post removeComment(Comment c) {
-        this.comments.removeIf(comment -> comment.getId().equals(c.getId()));
-        return this;
-    }
-
-    public enum Status {
-        DRAFT,
-        PENDING_MODERATED,
-        PUBLISHED
-    }
 }

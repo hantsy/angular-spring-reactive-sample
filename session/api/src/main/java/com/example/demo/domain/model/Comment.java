@@ -28,12 +28,12 @@ public class Comment implements Serializable {
     private LocalDateTime createdDate;
 
     @CreatedBy
-    private Username createdBy;
+    private String createdBy;
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
     @LastModifiedBy
-    private Username lastModifiedBy;
+    private String lastModifiedBy;
 
 }

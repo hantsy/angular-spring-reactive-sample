@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
  *
  * @author hantsy
  */
-public interface UserRepository extends ReactiveMongoRepository<User, String> {
+public interface UserRepository {
 
     Mono<User> findByUsername(String username);
 }

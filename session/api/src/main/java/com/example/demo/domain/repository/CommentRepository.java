@@ -1,9 +1,12 @@
 package com.example.demo.domain.repository;
 
 import com.example.demo.domain.model.Comment;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-public interface CommentRepository extends ReactiveMongoRepository<Comment, String> {
+public interface CommentRepository {
+
+    Mono<Comment> findById(String id);
+
+    Mono<Boolean> update(String id, String content);
 
 }

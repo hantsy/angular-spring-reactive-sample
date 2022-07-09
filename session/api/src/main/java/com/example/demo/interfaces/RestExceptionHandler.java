@@ -1,4 +1,4 @@
-package com.example.demo.web;
+package com.example.demo.interfaces;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.JsonProcessingException;

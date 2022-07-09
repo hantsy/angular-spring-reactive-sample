@@ -1,10 +1,11 @@
-package com.example.demo.web;
+package com.example.demo.interfaces;
 
 import com.example.demo.domain.model.Comment;
 import com.example.demo.domain.model.Post;
+import com.example.demo.domain.model.Status;
 import com.example.demo.domain.repository.CommentRepository;
 import com.example.demo.domain.repository.PostRepository;
-import com.example.demo.web.dto.*;
+import com.example.demo.interfaces.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -48,7 +49,7 @@ public class PostController {
 
     private Flux<Post> filterPublishedPostsByKeyword(String q) {
         return this.posts.findAll()
-                .filter(p -> Post.Status.PUBLISHED == p.getStatus())
+                .filter(p -> Status.PUBLISHED == p.getStatus())
                 .filter(
                         p -> Optional.ofNullable(q)
                                 .map(key -> p.getTitle().contains(key) || p.getContent().contains(key))
@@ -90,7 +91,7 @@ public class PostController {
                 .switchIfEmpty(Mono.error(new PostNotFoundException(id)))
                 .map(p -> {
                     // TODO: check if the current user is author it has ADMIN role.
-                    p.setStatus(Post.Status.valueOf(body.status()));
+                    p.setStatus(Status.valueOf(body.status()));
                     return p;
                 })
                 .flatMap(this.posts::save)
@@ -98,7 +99,6 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(NO_CONTENT)
     public Mono<ResponseEntity> delete(@PathVariable("id") String id) {
         return this.posts.findById(id)
                 .switchIfEmpty(Mono.error(new PostNotFoundException(id)))
@@ -114,14 +114,7 @@ public class PostController {
 
     @PostMapping("/{id}/comments")
     public Mono<ResponseEntity> createCommentsOf(@PathVariable("id") String id, @RequestBody @Valid CommentForm form) {
-        Comment comment = Comment.builder()
-                .content(form.content())
-                .build();
-
-        return this.comments.save(comment)
-                .doOnNext(c -> this.posts.findById(id)
-                        .map(p -> p.addComment(c))
-                        .flatMap(this.posts::save).then())
+        return this.posts.addComment(id, form.content())
                 .map(saved -> created(URI.create("/posts/" + id + "/comments/" + saved.getId())).build());
     }
 

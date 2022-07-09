@@ -6,6 +6,7 @@ import org.springframework.web.server.session.HeaderWebSessionIdResolver;
 import org.springframework.web.server.session.WebSessionIdResolver;
 
 @Configuration
+public
 class SessionConfig {
     public final static String xAuthToken = "X-AUTH-TOKEN";
 

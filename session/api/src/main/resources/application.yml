@@ -6,12 +6,14 @@ spring:
 #      uri: mongodb://user:secret@mongo1.example.com:12345,mongo2.example.com:23456/test
       uri: mongodb://localhost:27017/blog
       grid-fs-database: images
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      indent-output: true
 logging:
   level:
-    com.example: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.data: DEBUG
-    org.springframework.web: DEBUG
     root: INFO
     sql: DEBUG
     web: TRACE
+    com.example: DEBUG
+    org.springframework.security: DEBUG
