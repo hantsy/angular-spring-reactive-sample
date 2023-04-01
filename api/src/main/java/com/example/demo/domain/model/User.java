@@ -6,17 +6,15 @@
 package com.example.demo.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.Email;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- *
  * @author hantsy
  */
 @Data
