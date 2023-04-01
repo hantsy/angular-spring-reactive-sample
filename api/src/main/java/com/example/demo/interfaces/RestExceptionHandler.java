@@ -1,5 +1,6 @@
 package com.example.demo.interfaces;
 
+import com.example.demo.domain.exception.PostNotFoundException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
