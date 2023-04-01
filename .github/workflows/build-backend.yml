@@ -4,7 +4,7 @@ on:
   push:
     paths-ignore:
       - "docs/**"
-      - "client/**"
+      - "ui/**"
     branches:
       - master
       - release/*
@@ -29,6 +29,7 @@ jobs:
         with:
           java-version: 17
           distribution: "zulu"
+          cache: "maven"
 
       - name: Cache Maven packages
         uses: actions/cache@v3
@@ -38,32 +39,14 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Resolve dependencies
-        run: mvn clean dependency:go-offline --file server/pom.xml
+        run: mvn clean dependency:go-offline --file api/pom.xml
 
       - name: Build with Maven
-        run: mvn package --file server/pom.xml -DskipTests
+        run: mvn package --file api/pom.xml -DskipTests
 
-      # - name: Cache SonarCloud packages
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.sonar/cache
-      #     key: ${{ runner.os }}-sonar
-      #     restore-keys: ${{ runner.os }}-sonar
-
-      # - name: Run Docker Compose
-      #   run: docker-compose up mongodb
-
-      # - name: Build and analyze
-      #   run: |
-      #     mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --file server/pom.xml -Pcoverage
-      #   env:
-      #     # Needed to get some information about the pull request, if any
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     # SonarCloud access token should be generated from https://sonarcloud.io/account/security/
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Build Docker Image
-        run: mvn spring-boot:build-image --file server/pom.xml -DskipTests
+        run: mvn spring-boot:build-image --file api/pom.xml -DskipTests
 
 #       - name: Login to DockerHub Registry
 #         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin

@@ -4,10 +4,14 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-  - package-ecosystem: maven
-    directory: "/server"
+  - package-ecosystem: "npm"
+    directory: "/ui"
     schedule:
-      interval: weekly
+      interval: monthly    
+  - package-ecosystem: maven
+    directory: "/api"
+    schedule:
+      interval: monthly
     open-pull-requests-limit: 10
     reviewers:
       - "hantsy"

@@ -3,7 +3,7 @@ on:
   push:
     paths-ignore:
       - "docs/**"
-      - "server/**"
+      - "api/**"
     branches:
       - master
       - release/*
@@ -33,7 +33,7 @@ jobs:
 
       - name: Install Dependencies & Build Docker Image
         run: |
-          cd ./client
+          cd ./ui
           npm install
           npm run build
           docker build -t hantsy/angular-spring-reactive-sample-client .
