@@ -8,7 +8,7 @@ updates:
     directory: "/ui"
     schedule:
       interval: monthly    
-  - package-ecosystem: maven
+  - package-ecosystem: "maven"
     directory: "/api"
     schedule:
       interval: monthly
