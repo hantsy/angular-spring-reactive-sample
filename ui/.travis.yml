@@ -1,0 +1,24 @@
+    dist: trusty
+    sudo: false
+
+    language: node_js
+    node_js:
+      - "12"
+
+    addons:
+      apt:
+        sources:
+          - google-chrome
+        packages:
+          - google-chrome-stable
+
+    cache:
+      directories:
+         - ./node_modules
+
+    install:
+      - npm install
+
+    script:
+      - npm run test -- --single-run --no-progress --browser=ChromeHeadlessCI
+      - npm run e2e -- --no-progress --config=e2e/protractor-ci.conf.js

@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "projects": {
+    "shared-components": "libs/shared/components",
+    "shared-components-e2e": "apps/shared-components-e2e",
+    "todolist": "apps/todolist",
+    "todolist-e2e": "apps/todolist-e2e"
+  }
+}

@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  display: flex;
+  flex-direction: column;
+
+  font-family: Roboto, Arial, sans-serif;
+  margin: 0;
+  height: 100%;
+}
+
+mat-list-item mat-icon > svg {
+  border-radius: 50%;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}

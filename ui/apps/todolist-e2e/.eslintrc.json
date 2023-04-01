@@ -1,0 +1,10 @@
+{
+  "extends": ["plugin:cypress/recommended", "../../.eslintrc.js"],
+  "ignorePatterns": ["!**/*"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {}
+    }
+  ]
+}
