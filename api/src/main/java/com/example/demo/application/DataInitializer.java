@@ -5,8 +5,6 @@
  */
 package com.example.demo.application;
 
-import com.example.demo.domain.model.Post;
-import com.example.demo.domain.model.Status;
 import com.example.demo.domain.model.User;
 import com.example.demo.domain.repository.PostRepository;
 import com.example.demo.domain.repository.UserRepository;
@@ -58,7 +56,7 @@ class DataInitializer {
                                 .password(passwordEncoder.encode("password"))
                                 .email(username + "@example.com")
                                 .build();
-                            return this.users.save(user);
+                            return this.users.create(user);
                         }
                     )
             )
@@ -78,7 +76,7 @@ class DataInitializer {
                 Flux
                     .just("Post one", "Post two")
                     .flatMap(
-                        title -> this.posts.save(Post.builder().title(title).content("content of " + title).status(Status.PUBLISHED).build())
+                        title -> this.posts.create(title, "content of " + title)
                     )
             )
             .log()

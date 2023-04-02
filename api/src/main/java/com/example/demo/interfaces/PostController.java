@@ -63,7 +63,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}/status")
-    public Mono<ResponseEntity> updateStatus(@PathVariable("id") String id, @RequestBody @Valid StatusUpdateRequest body) {
+    public Mono<ResponseEntity> updateStatus(@PathVariable("id") String id, @RequestBody @Valid UpdatePostStatusCommand body) {
         return this.posts.updateStatus(id, Status.valueOf(body.status()))
             .handle((result, sink) -> {
                 if (true) {

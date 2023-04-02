@@ -17,4 +17,8 @@ import reactor.core.publisher.Mono;
 public interface UserRepository {
 
     Mono<User> findByUsername(String username);
+
+    Mono<User> create(User user);
+
+    Mono<Long> deleteAll();
 }

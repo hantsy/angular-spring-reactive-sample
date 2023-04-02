@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Document
+@Document(collection = "comments")
 @Data
 @Builder
 @NoArgsConstructor

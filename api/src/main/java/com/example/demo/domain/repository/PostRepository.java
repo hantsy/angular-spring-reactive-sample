@@ -7,6 +7,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface PostRepository {
+
+    Flux<Post> findAll();
     Flux<PostSummary> findByKeyword(String keyword, int offset, int limit);
 
     Mono<Long> countByKeyword(String keyword);

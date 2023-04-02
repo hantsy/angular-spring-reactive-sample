@@ -1,11 +1,11 @@
 package com.example.demo.domain.model;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -13,7 +13,7 @@ import java.util.List;
 
 import static com.example.demo.domain.model.Status.DRAFT;
 
-@Document
+@Document(collection = "posts")
 @Data
 @ToString
 @Builder
@@ -34,7 +34,12 @@ public class Post implements Serializable {
     private Status status = DRAFT;
 
     @DocumentReference
+    @Builder.Default
     List<Comment> comments = Collections.emptyList();
+
+//    @Version
+//    @Builder.Default
+//    Long version = null;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -47,5 +52,4 @@ public class Post implements Serializable {
 
     @LastModifiedBy
     private String lastModifiedBy;
-
 }

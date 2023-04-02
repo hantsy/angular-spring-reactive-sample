@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 
 @Configuration
 @EnableReactiveMongoAuditing
-class MongoConfig {
+public class MongoConfig {
 
     @Bean
     public ReactiveAuditorAware<String> reactiveAuditorAware() {

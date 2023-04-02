@@ -24,6 +24,11 @@ public class MongoPostRepository implements PostRepository {
     private final ReactiveMongoTemplate mongoTemplate;
 
     @Override
+    public Flux<Post> findAll() {
+        return mongoTemplate.findAll(Post.class);
+    }
+
+    @Override
     public Flux<PostSummary> findByKeyword(String keyword, int offset, int limit) {
         return mongoTemplate
                 .find(

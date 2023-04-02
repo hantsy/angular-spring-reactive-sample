@@ -9,7 +9,7 @@ import com.example.demo.domain.repository.PostRepository;
 import com.example.demo.domain.repository.UserRepository;
 import com.example.demo.interfaces.PostController;
 import com.example.demo.interfaces.dto.CommentForm;
-import com.example.demo.interfaces.dto.StatusUpdateRequest;
+import com.example.demo.interfaces.dto.UpdatePostStatusCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,14 +80,14 @@ public class PostControllerTest {
     @Test
     public void getAllPosts_shouldBeOk() {
         given(posts.findAll())
-                .willReturn(Flux.just(Post.builder().id("1").title("my first post").content("content of my first post").createdDate(LocalDateTime.now()).status(Status.PUBLISHED).build()));
+            .willReturn(Flux.just(Post.builder().id("1").title("my first post").content("content of my first post").createdDate(LocalDateTime.now()).status(Status.PUBLISHED).build()));
 
         client.get().uri("/posts").exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$[0].title").isEqualTo("my first post")
-                .jsonPath("$[0].id").isEqualTo("1")
-                .jsonPath("$[0].content").isEqualTo("content of my first post");
+            .expectStatus().isOk()
+            .expectBody()
+            .jsonPath("$[0].title").isEqualTo("my first post")
+            .jsonPath("$[0].id").isEqualTo("1")
+            .jsonPath("$[0].content").isEqualTo("content of my first post");
 
         verify(this.posts, times(1)).findAll();
         verifyNoMoreInteractions(this.posts);
@@ -96,40 +96,40 @@ public class PostControllerTest {
     @Test
     public void getAllPostsByKeyword_shouldBeOk() {
         List<Post> data = IntStream.range(1, 16)//15 posts will be created.
-                .mapToObj(n -> Post.builder()
-                        .id("" + n)
-                        .title("my " + n + " first post")
-                        .content("content of my " + n + " first post")
-                        .status(Status.PUBLISHED)
-                        .createdDate(LocalDateTime.now())
-                        .build())
-                .collect(toList());
+            .mapToObj(n -> Post.builder()
+                .id("" + n)
+                .title("my " + n + " first post")
+                .content("content of my " + n + " first post")
+                .status(Status.PUBLISHED)
+                .createdDate(LocalDateTime.now())
+                .build())
+            .collect(toList());
 
         given(posts.findAll())
-                .willReturn(Flux.fromIterable(data));
+            .willReturn(Flux.fromIterable(data));
 
         client.get().uri("/posts").exchange()
-                .expectStatus().isOk()
-                .expectBodyList(Post.class).hasSize(10);
+            .expectStatus().isOk()
+            .expectBodyList(Post.class).hasSize(10);
         client.get().uri("/posts?page={page}", 1).exchange()
-                .expectStatus().isOk()
-                .expectBodyList(Post.class).hasSize(5);
+            .expectStatus().isOk()
+            .expectBodyList(Post.class).hasSize(5);
 
         client.get().uri("/posts/count").exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.count").isEqualTo(15);
+            .expectStatus().isOk()
+            .expectBody()
+            .jsonPath("$.count").isEqualTo(15);
 
         client.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/posts/count")
-                        .queryParam("q", "5")
-                        .build()
-                )
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.count").isEqualTo(2);
+            .uri(uriBuilder -> uriBuilder
+                .path("/posts/count")
+                .queryParam("q", "5")
+                .build()
+            )
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody()
+            .jsonPath("$.count").isEqualTo(2);
 
         verify(this.posts, times(4)).findAll();
         verifyNoMoreInteractions(this.posts);
@@ -139,14 +139,14 @@ public class PostControllerTest {
     @Test
     public void getPostById_shouldBeOk() {
         given(posts.findById("1"))
-                .willReturn(Mono.just(Post.builder().id("1").title("my first post").content("content of my first post").build()));
+            .willReturn(Mono.just(Post.builder().id("1").title("my first post").content("content of my first post").build()));
 
         client.get().uri("/posts/1").exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.title").isEqualTo("my first post")
-                .jsonPath("$.id").isEqualTo("1")
-                .jsonPath("$.content").isEqualTo("content of my first post");
+            .expectStatus().isOk()
+            .expectBody()
+            .jsonPath("$.title").isEqualTo("my first post")
+            .jsonPath("$.id").isEqualTo("1")
+            .jsonPath("$.content").isEqualTo("content of my first post");
 
         verify(this.posts, times(1)).findById(anyString());
         verifyNoMoreInteractions(this.posts);
@@ -156,10 +156,10 @@ public class PostControllerTest {
     @Test
     public void getPostByNonExistedId_shouldReturn404() {
         given(posts.findById("1"))
-                .willReturn(Mono.empty());
+            .willReturn(Mono.empty());
 
         client.get().uri("/posts/1").exchange()
-                .expectStatus().isNotFound();
+            .expectStatus().isNotFound();
 
         verify(this.posts, times(1)).findById(anyString());
         verifyNoMoreInteractions(this.posts);
@@ -170,21 +170,21 @@ public class PostControllerTest {
         Post post = Post.builder().id("1").title("my first post").content("content of my first post").createdDate(LocalDateTime.now()).build();
 
         given(posts.findById("1"))
-                .willReturn(Mono.just(post));
+            .willReturn(Mono.just(post));
 
         post.setTitle("updated title");
         post.setContent("updated content");
 
-        given(posts.save(post))
-                .willReturn(Mono.just(Post.builder().id("1").title("updated title").content("updated content").createdDate(LocalDateTime.now()).build()));
+        given(posts.update(post.getId(), post.getTitle(), post.getContent()))
+            .willReturn(Mono.just(Boolean.TRUE));
 
         client.put().uri("/posts/1").body(BodyInserters.fromValue(post))
-                .exchange()
-                .expectStatus().isNoContent()
-                .expectBody().isEmpty();
+            .exchange()
+            .expectStatus().isNoContent()
+            .expectBody().isEmpty();
 
         verify(this.posts, times(1)).findById(anyString());
-        verify(this.posts, times(1)).save(any(Post.class));
+        verify(this.posts, times(1)).update(any(), any(), any());
         verifyNoMoreInteractions(this.posts);
     }
 
@@ -196,30 +196,30 @@ public class PostControllerTest {
 
         post.setStatus(Status.PUBLISHED);
 
-        given(posts.save(post))
-                .willReturn(Mono.just(Post.builder().id("1").title("updated title").content("updated content").createdDate(LocalDateTime.now()).build()));
+        given(posts.updateStatus(post.getId(), post.getStatus()))
+            .willReturn(Mono.just(Boolean.TRUE));
 
-        client.put().uri("/posts/1/status").body(BodyInserters.fromValue(new StatusUpdateRequest("PUBLISHED")))
-                .exchange()
-                .expectStatus().isNoContent();
+        client.put().uri("/posts/1/status").body(BodyInserters.fromValue(new UpdatePostStatusCommand("PUBLISHED")))
+            .exchange()
+            .expectStatus().isNoContent();
 
         verify(this.posts, times(1)).findById(anyString());
-        verify(this.posts, times(1)).save(any(Post.class));
+        verify(this.posts, times(1)).updateStatus(any(), any());
         verifyNoMoreInteractions(this.posts);
     }
 
     @Test
     public void createPost_shouldBeOk() {
         Post post = Post.builder().title("my first post").content("content of my first post").build();
-        given(posts.save(post))
-                .willReturn(Mono.just(Post.builder().id("1").title("my first post").content("content of my first post").createdDate(LocalDateTime.now()).build()));
+        given(posts.create(post.getTitle(), post.getContent()))
+            .willReturn(Mono.just(Post.builder().id("1").title("my first post").content("content of my first post").createdDate(LocalDateTime.now()).build()));
 
         client.post().uri("/posts").body(BodyInserters.fromValue(post))
-                .exchange()
-                .expectStatus().isCreated()
-                .expectBody().isEmpty();
+            .exchange()
+            .expectStatus().isCreated()
+            .expectBody().isEmpty();
 
-        verify(this.posts, times(1)).save(any(Post.class));
+        verify(this.posts, times(1)).create(any(), any());
         verifyNoMoreInteractions(this.posts);
     }
 
@@ -228,17 +228,17 @@ public class PostControllerTest {
         Post post = Post.builder().id("1").title("my first post").content("content of my first post").createdDate(LocalDateTime.now()).build();
 
         given(posts.findById("1"))
-                .willReturn(Mono.just(post));
+            .willReturn(Mono.just(post));
         Mono<Void> mono = Mono.empty();
-        given(posts.delete(post))
-                .willReturn(mono);
+        given(posts.deleteById(post.getId()))
+            .willReturn(Mono.just(Boolean.TRUE));
 
         client.delete().uri("/posts/1")
-                .exchange()
-                .expectStatus().isNoContent();
+            .exchange()
+            .expectStatus().isNoContent();
 
         verify(this.posts, times(1)).findById(anyString());
-        verify(this.posts, times(1)).delete(any(Post.class));
+        verify(this.posts, times(1)).deleteById(any());
         verifyNoMoreInteractions(this.posts);
     }
 
@@ -246,45 +246,23 @@ public class PostControllerTest {
     public void getCommentsByPostId_shouldBeOk() {
         var commentId = UUID.randomUUID().toString();
         given(posts.findById(anyString()))
-                .willReturn(Mono.just(
-                                Post.builder().id(UUID.randomUUID().toString())
-                                        .title("my first post")
-                                        .content("content of my first post")
-                                        .build()
-                                        .addComment(
-                                                Comment.builder().id(commentId)
-                                                        .content("comment of my first post")
-                                                        .createdDate(LocalDateTime.now())
-                                                        .build()
-                                        )
-                        )
-                );
+            .willReturn(Mono.just(
+                    Post.builder().id(UUID.randomUUID().toString())
+                        .title("my first post")
+                        .content("content of my first post")
+                        .build()
+                )
+            );
 
         client.get().uri("/posts/1/comments").exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.[0].id").isEqualTo(commentId)
-                .jsonPath("$.[0].content").isEqualTo("comment of my first post");
+            .expectStatus().isOk()
+            .expectBody()
+            .jsonPath("$.[0].id").isEqualTo(commentId)
+            .jsonPath("$.[0].content").isEqualTo("comment of my first post");
 
         verify(this.posts, times(1)).findById(anyString());
         verifyNoMoreInteractions(this.comments);
 
-    }
-
-    @Test
-    public void createCommentOfPost_shouldBeOk() {
-
-        given(comments.save(any(Comment.class)))
-                .willReturn(Mono.just(Comment.builder().id("comment-id-1").content("content of my first post").createdDate(LocalDateTime.now()).build()));
-
-        CommentForm form = new CommentForm("comment of my first post");
-        client.post().uri("/posts/1/comments").body(BodyInserters.fromValue(form))
-                .exchange()
-                .expectStatus().isCreated()
-                .expectBody().isEmpty();
-
-        verify(this.comments, times(1)).save(any(Comment.class));
-        verifyNoMoreInteractions(this.comments);
     }
 
 }

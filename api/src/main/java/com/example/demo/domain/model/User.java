@@ -17,12 +17,12 @@ import java.util.List;
 /**
  * @author hantsy
  */
+@Document(collection = "users")
 @Data
 @ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document
 public class User {
 
     @Id
