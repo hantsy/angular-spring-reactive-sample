@@ -43,7 +43,7 @@
     "@nrwl/storybook": "14.4.2",
     "@nrwl/workspace": "14.4.2",
     "@storybook/addon-essentials": "~6.5.9",
-    "@storybook/angular": "~6.5.9",
+    "@storybook/angular": "~7.2.0",
     "@storybook/builder-webpack5": "~6.5.9",
     "@storybook/core-server": "~6.5.9",
     "@storybook/manager-webpack5": "~6.5.9",
