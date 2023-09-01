@@ -57,7 +57,7 @@
     "jasmine-core": "~4.1.0",
     "jasmine-spec-reporter": "~5.0.0",
     "jest": "27.5.1",
-    "jest-preset-angular": "~11.1.2",
+    "jest-preset-angular": "~13.1.1",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "~2.2.0",
