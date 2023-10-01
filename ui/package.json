@@ -37,7 +37,7 @@
     "@angular-eslint/template-parser": "~14.0.0",
     "@angular/cli": "^14.0.0",
     "@angular/compiler-cli": "^14.0.0",
-    "@angular/language-service": "~14.0.0",
+    "@angular/language-service": "~16.2.7",
     "@nrwl/cypress": "^14.4.2",
     "@nrwl/jest": "^16.6.0",
     "@nrwl/storybook": "14.4.2",
