@@ -1,4 +1,6 @@
 {
+  "name": "todolist",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "generators": {
     "@schematics/angular:application": {
@@ -72,8 +74,8 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/todolist"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/todolist"],
       "options": {
         "jestConfig": "apps/todolist/jest.config.ts",
         "passWithNoTests": true

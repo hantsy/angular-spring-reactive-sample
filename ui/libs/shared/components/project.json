@@ -1,11 +1,13 @@
 {
+  "name": "shared-components",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/shared/components/src",
   "prefix": "app",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/components"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/shared/components"],
       "options": {
         "jestConfig": "libs/shared/components/jest.config.ts",
         "passWithNoTests": true

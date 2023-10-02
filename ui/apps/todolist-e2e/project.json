@@ -1,10 +1,11 @@
 {
+  "name": "todolist-e2e",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/todolist-e2e/src",
   "projectType": "application",
   "targets": {
     "e2e": {
-      "executor": "@nrwl/cypress:cypress",
+      "executor": "@nx/cypress:cypress",
       "options": {
         "cypressConfig": "apps/todolist-e2e/cypress.json",
         "devServerTarget": "todolist:serve:development"
