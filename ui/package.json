@@ -48,7 +48,7 @@
     "@storybook/addon-essentials": "7.4.5",
     "@storybook/angular": "7.4.5",
     "@storybook/core-server": "7.4.5",
-    "@types/jasmine": "~4.0.0",
+    "@types/jasmine": "~5.1.1",
     "@types/jest": "29.4.4",
     "@types/node": "^20.8.0",
     "autoprefixer": "^10.4.7",
