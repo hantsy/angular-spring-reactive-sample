@@ -46,7 +46,6 @@
     "@nx/workspace": "17.1.3",
     "@schematics/angular": "17.0.5",
     "@storybook/addon-essentials": "7.5.1",
-    "@storybook/angular": "7.5.1",
     "@storybook/core-server": "7.5.1",
     "@types/jasmine": "~4.0.0",
     "@types/jest": "29.4.4",
