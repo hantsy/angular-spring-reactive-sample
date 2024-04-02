@@ -1,7 +1,4 @@
 {
-  "affected": {
-    "defaultBase": "master"
-  },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
@@ -70,5 +67,8 @@
       "!{projectRoot}/jest.config.[jt]s",
       "!{projectRoot}/src/test-setup.[jt]s"
     ]
-  }
+  },
+  "nxCloudAccessToken": "MDlhOGI4MTYtODdlMy00ZDkyLWJkYWMtNzY0MzFhZDUyNDFlfHJlYWQtd3JpdGU=",
+  "useInferencePlugins": false,
+  "defaultBase": "master"
 }
