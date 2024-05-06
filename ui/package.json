@@ -24,7 +24,7 @@
     "@angular/platform-browser": "17.3.2",
     "@angular/platform-browser-dynamic": "17.3.2",
     "@angular/router": "17.3.2",
-    "@nx/angular": "18.2.1",
+    "@nx/angular": "18.3.4",
     "rxjs": "7.8.1",
     "tslib": "^2.3.0",
     "web-animations-js": "^2.3.2",
@@ -40,10 +40,10 @@
     "@angular/cli": "~17.3.0",
     "@angular/compiler-cli": "17.3.2",
     "@angular/language-service": "17.3.2",
-    "@nx/cypress": "18.2.1",
-    "@nx/jest": "18.2.1",
-    "@nx/storybook": "18.2.1",
-    "@nx/workspace": "18.2.1",
+    "@nx/cypress": "18.3.4",
+    "@nx/jest": "18.3.4",
+    "@nx/storybook": "18.3.4",
+    "@nx/workspace": "18.3.4",
     "@schematics/angular": "17.3.2",
     "@storybook/addon-essentials": "7.5.1",
     "@storybook/core-server": "7.5.1",
@@ -67,7 +67,7 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "5.1.0",
     "karma-jasmine-html-reporter": "2.0.0",
-    "nx": "18.2.1",
+    "nx": "18.3.4",
     "postcss": "^8.4.14",
     "prettier": "^2.6.2",
     "react": "^18.2.0",
@@ -80,3 +80,4 @@
     "webpack": "^5.64.0"
   }
 }
+
