@@ -1,35 +1,18 @@
 // Http testing module and mocking controller
 import {
-  HttpClientTestingModule,
-  HttpTestingController
-} from '@angular/common/http/testing';
-import {
-  HttpClient,
-  HttpClientModule,
-  HttpErrorResponse
-} from '@angular/common/http';
-import {
   ComponentFixture,
   TestBed,
-  async,
-  inject,
-  ComponentFixtureAutoDetect,
+  waitForAsync,
   tick,
   fakeAsync
 } from '@angular/core/testing';
-import {
-  BaseRequestOptions,
-  Http,
-  Response,
-  ResponseOptions
-} from '@angular/http';
-import { Observable, of, empty, from, interval, defer } from 'rxjs';
+import { Observable, of, EMPTY, from } from 'rxjs';
 import { PostFormComponent } from './post-form.component';
 import { PostService } from '../post.service';
 import { Post } from '../post.model';
 import { SharedModule } from '../../../shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DebugElement, Component } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 const posts = [
@@ -58,10 +41,10 @@ class MockPostService {
     return from(posts);
   }
   savePost(post: Post): Observable<any> {
-    return empty();
+    return EMPTY;
   }
   updatePost(id: string, post: Post): Observable<any> {
-    return empty();
+    return EMPTY;
   }
 }
 
@@ -76,7 +59,7 @@ describe('Component: PostFormComponent', () => {
     'updatePost'
   ]);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [BrowserAnimationsModule, SharedModule],
       declarations: [PostFormComponent],
@@ -86,7 +69,7 @@ describe('Component: PostFormComponent', () => {
   }));
 
   beforeEach(() => {
-    postService = TestBed.get(PostService);
+    postService = TestBed.inject(PostService);
     fixture = TestBed.createComponent(PostFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -105,14 +88,14 @@ describe('Component: PostFormComponent', () => {
   it('should have <button> with "save"', () => {
     const buttonElement: HTMLElement = fixture.nativeElement;
     const p = buttonElement.querySelector('button');
-    expect(p.textContent).toContain('save');
+    expect(p?.textContent).toContain('save');
   });
 
   it('should find the <button> with fixture.debugElement.nativeElement)', () => {
     const compDe: DebugElement = fixture.debugElement;
     const compEl: HTMLElement = compDe.nativeElement;
     const p = compEl.querySelector('button');
-    expect(p.textContent).toContain('save');
+    expect(p?.textContent).toContain('save');
   });
 
   it('should find the <button> with fixture.debugElement.query(By.css)', () => {
@@ -176,7 +159,7 @@ describe('Component: PostFormComponent(input & output)', () => {
     fixture.detectChanges();
 
     expect(saved).toBeTruthy();
-    expect(savePostSpy.calls.count()).toBe(1, 'savePost called');
+    expect(savePostSpy.calls.count()).toBe(1);
   }));
 
   it('should raise `saved` event when the form is submitted (triggerEventHandler):failed to save', fakeAsync(() => {
@@ -198,7 +181,7 @@ describe('Component: PostFormComponent(input & output)', () => {
     fixture.detectChanges();
 
     expect(saved).toBeFalsy();
-    expect(savePostSpy).toThrowError();
+    expect(savePostSpy).toThrow();
   }));
 
   it('should raise `saved` event when the form is submitted (triggerEventHandler):update', fakeAsync(() => {
@@ -226,7 +209,7 @@ describe('Component: PostFormComponent(input & output)', () => {
     fixture.detectChanges();
 
     expect(saved).toBeTruthy();
-    expect(updatePostSpy.calls.count()).toBe(1, 'updatePost called');
+    expect(updatePostSpy.calls.count()).toBe(1);
   }));
 
   it('should raise `saved` event when the form is submitted (triggerEventHandler):failed to update', fakeAsync(() => {
@@ -250,7 +233,7 @@ describe('Component: PostFormComponent(input & output)', () => {
     fixture.detectChanges();
 
     expect(saved).toBeFalsy();
-    expect(updatePostSpy.calls.count()).toBe(1, 'updatePost called');
-    expect(updatePostSpy).toThrowError();
+    expect(updatePostSpy.calls.count()).toBe(1);
+    expect(updatePostSpy).toThrow();
   }));
 });

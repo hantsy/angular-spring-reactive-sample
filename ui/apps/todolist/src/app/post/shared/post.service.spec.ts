@@ -1,6 +1,6 @@
 // Http testing module and mocking controller
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient, HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { TestBed, async, inject } from '@angular/core/testing';
 import { BaseRequestOptions, Http, Response, ResponseOptions } from '@angular/http';
 import { Observable } from 'rxjs';
@@ -39,11 +39,9 @@ describe('Service: Post', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      // Import the HttpClient mocking services
-      imports: [HttpClientTestingModule],
-      // Provide the service-under-test and its dependencies
-      providers: [PostService, HttpErrorHandler, MessageService],
-    });
+    imports: [],
+    providers: [PostService, HttpErrorHandler, MessageService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
 
     // Inject the http, test controller, and service-under-test
     // as they will be referenced by each test.
