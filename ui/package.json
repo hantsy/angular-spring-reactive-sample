@@ -41,7 +41,7 @@
     "@angular/compiler-cli": "18.0.1",
     "@angular/language-service": "18.0.1",
     "@nx/cypress": "19.1.1",
-    "@nx/jest": "19.1.1",
+    "@nx/jest": "19.6.4",
     "@nx/storybook": "19.1.1",
     "@nx/workspace": "19.1.1",
     "@schematics/angular": "18.0.2",
