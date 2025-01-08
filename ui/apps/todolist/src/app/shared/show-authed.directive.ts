@@ -7,7 +7,10 @@ import {
 } from '@angular/core';
 import { AuthService } from '../core/auth.service';
 
-@Directive({ selector: '[showAuthed]' })
+@Directive({
+    selector: '[showAuthed]',
+    standalone: false
+})
 export class ShowAuthedDirective implements OnInit {
   constructor(
     private templateRef: TemplateRef<any>,

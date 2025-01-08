@@ -3,9 +3,10 @@ import { Component, OnInit, OnChanges, Input, SimpleChange } from '@angular/core
 import { Post } from '../../shared/post.model';
 
 @Component({
-  selector: 'app-post-details-panel',
-  templateUrl: './post-details-panel.component.html',
-  styleUrls: ['./post-details-panel.component.css']
+    selector: 'app-post-details-panel',
+    templateUrl: './post-details-panel.component.html',
+    styleUrls: ['./post-details-panel.component.css'],
+    standalone: false
 })
 export class PostDetailsPanelComponent implements OnInit, OnChanges {
 

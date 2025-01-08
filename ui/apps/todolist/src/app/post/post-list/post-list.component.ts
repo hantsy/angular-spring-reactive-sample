@@ -6,9 +6,10 @@ import { Post } from '../shared/post.model';
 import { PostService } from '../shared/post.service';
 
 @Component({
-  selector: 'app-post-list',
-  templateUrl: './post-list.component.html',
-  styleUrls: ['./post-list.component.css']
+    selector: 'app-post-list',
+    templateUrl: './post-list.component.html',
+    styleUrls: ['./post-list.component.css'],
+    standalone: false
 })
 export class PostListComponent implements OnInit, OnDestroy {
 

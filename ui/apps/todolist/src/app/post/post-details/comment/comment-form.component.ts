@@ -4,9 +4,10 @@ import { Post } from '../../shared/post.model';
 import { PostService } from '../../shared/post.service';
 
 @Component({
-  selector: 'app-comment-form',
-  templateUrl: './comment-form.component.html',
-  styleUrls: ['./comment-form.component.css'],
+    selector: 'app-comment-form',
+    templateUrl: './comment-form.component.html',
+    styleUrls: ['./comment-form.component.css'],
+    standalone: false
 })
 export class CommentFormComponent implements OnInit {
   @Input() post: Post;

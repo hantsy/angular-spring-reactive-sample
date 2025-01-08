@@ -5,9 +5,10 @@ import { Post } from '../shared/post.model';
 import { PostService } from '../shared/post.service';
 
 @Component({
-  selector: 'app-edit-post',
-  templateUrl: './edit-post.component.html',
-  styleUrls: ['./edit-post.component.css']
+    selector: 'app-edit-post',
+    templateUrl: './edit-post.component.html',
+    styleUrls: ['./edit-post.component.css'],
+    standalone: false
 })
 export class EditPostComponent implements OnInit, OnDestroy {
   post: Post = { title: '', content: '' };

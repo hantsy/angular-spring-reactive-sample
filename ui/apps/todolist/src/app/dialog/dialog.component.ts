@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  templateUrl: 'dialog.component.html'
+    templateUrl: 'dialog.component.html',
+    standalone: false
 })
 export class DialogComponent {
   avatars = new Array(16).fill(0).map((_, i) => `svg-${i + 1}`);

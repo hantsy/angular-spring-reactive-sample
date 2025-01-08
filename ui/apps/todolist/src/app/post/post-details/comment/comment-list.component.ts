@@ -5,9 +5,10 @@ import { Comment } from '../../shared/comment.model';
 
 
 @Component({
-  selector: 'app-comment-list',
-  templateUrl: './comment-list.component.html',
-  styleUrls: ['./comment-list.component.css']
+    selector: 'app-comment-list',
+    templateUrl: './comment-list.component.html',
+    styleUrls: ['./comment-list.component.css'],
+    standalone: false
 })
 export class CommentListComponent implements OnInit, OnChanges {
 

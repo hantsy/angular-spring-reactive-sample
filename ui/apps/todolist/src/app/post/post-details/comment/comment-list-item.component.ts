@@ -3,9 +3,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Comment } from '../../shared/comment.model';
 
 @Component({
-  selector: 'app-comment-list-item',
-  templateUrl: './comment-list-item.component.html',
-  styleUrls: ['./comment-list-item.component.css']
+    selector: 'app-comment-list-item',
+    templateUrl: './comment-list-item.component.html',
+    styleUrls: ['./comment-list-item.component.css'],
+    standalone: false
 })
 export class CommentListItemComponent implements OnInit {
 

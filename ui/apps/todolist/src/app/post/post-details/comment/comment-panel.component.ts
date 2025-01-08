@@ -4,9 +4,10 @@ import { Comment } from '../../shared/comment.model';
 import { PostService } from '../../shared/post.service';
 
 @Component({
-  selector: 'app-comment-panel',
-  templateUrl: './comment-panel.component.html',
-  styleUrls: ['./comment-panel.component.css']
+    selector: 'app-comment-panel',
+    templateUrl: './comment-panel.component.html',
+    styleUrls: ['./comment-panel.component.css'],
+    standalone: false
 })
 export class CommentPanelComponent implements OnInit {
 

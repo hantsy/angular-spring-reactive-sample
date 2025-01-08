@@ -8,9 +8,10 @@ import { Post } from '../shared/post.model';
 import { Comment } from '../shared/comment.model';
 
 @Component({
-  selector: 'app-post-details',
-  templateUrl: './post-details.component.html',
-  styleUrls: ['./post-details.component.css']
+    selector: 'app-post-details',
+    templateUrl: './post-details.component.html',
+    styleUrls: ['./post-details.component.css'],
+    standalone: false
 })
 export class PostDetailsComponent implements OnInit, OnDestroy {
 

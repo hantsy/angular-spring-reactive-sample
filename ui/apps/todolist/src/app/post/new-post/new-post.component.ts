@@ -5,9 +5,10 @@ import { Post } from '../shared/post.model';
 import { PostService } from '../shared/post.service';
 
 @Component({
-  selector: 'app-new-post',
-  templateUrl: './new-post.component.html',
-  styleUrls: ['./new-post.component.css']
+    selector: 'app-new-post',
+    templateUrl: './new-post.component.html',
+    styleUrls: ['./new-post.component.css'],
+    standalone: false
 })
 export class NewPostComponent implements OnInit, OnDestroy {
   post: Post = { title: '', content: '' };

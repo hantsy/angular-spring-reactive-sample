@@ -5,9 +5,10 @@ import { Post } from '../post.model';
 import { PostService } from '../post.service';
 
 @Component({
-  selector: 'app-post-form',
-  templateUrl: './post-form.component.html',
-  styleUrls: ['./post-form.component.css'],
+    selector: 'app-post-form',
+    templateUrl: './post-form.component.html',
+    styleUrls: ['./post-form.component.css'],
+    standalone: false
 })
 export class PostFormComponent implements OnInit, OnDestroy {
   @Input() post: Post = { title: '', content: '' };
