@@ -1,224 +1,87 @@
 {
   "migrations": [
     {
-      "cli": "nx",
-      "version": "19.2.0-beta.2",
-      "description": "Updates the default workspace data directory to .nx/workspace-data",
-      "implementation": "./src/migrations/update-19-2-0/move-workspace-data-directory",
+      "version": "21.0.0-beta.8",
+      "description": "Removes the legacy cache configuration from nx.json",
+      "implementation": "./src/migrations/update-21-0-0/remove-legacy-cache",
       "package": "nx",
-      "name": "19-2-0-move-graph-cache-directory"
+      "name": "remove-legacy-cache"
     },
     {
-      "cli": "nx",
-      "version": "19.2.2-beta.0",
-      "description": "Updates the nx wrapper.",
-      "implementation": "./src/migrations/update-17-3-0/update-nxw",
+      "version": "21.0.0-beta.8",
+      "description": "Removes the legacy cache configuration from nx.json",
+      "implementation": "./src/migrations/update-21-0-0/remove-custom-tasks-runner",
       "package": "nx",
-      "name": "19-2-2-update-nx-wrapper"
+      "name": "remove-custom-tasks-runner"
     },
     {
-      "version": "19.2.4-beta.0",
-      "description": "Set project name in nx.json explicitly",
-      "implementation": "./src/migrations/update-19-2-4/set-project-name",
-      "x-repair-skip": true,
+      "version": "21.0.0-beta.11",
+      "description": "Updates release version config based on the breaking changes in Nx v21",
+      "implementation": "./src/migrations/update-21-0-0/release-version-config-changes",
       "package": "nx",
-      "name": "19-2-4-set-project-name"
+      "name": "release-version-config-changes"
     },
     {
-      "version": "20.0.0-beta.7",
-      "description": "Migration for v20.0.0-beta.7",
-      "implementation": "./src/migrations/update-20-0-0/move-use-daemon-process",
+      "version": "21.0.0-beta.11",
+      "description": "Updates release changelog config based on the breaking changes in Nx v21",
+      "implementation": "./src/migrations/update-21-0-0/release-changelog-config-changes",
       "package": "nx",
-      "name": "move-use-daemon-process"
+      "name": "release-changelog-config-changes"
     },
     {
-      "version": "20.0.1",
-      "description": "Set `useLegacyCache` to true for migrating workspaces",
-      "implementation": "./src/migrations/update-20-0-1/use-legacy-cache",
-      "x-repair-skip": true,
+      "version": "21.1.0-beta.2",
+      "description": "Adds **/nx-rules.mdc and **/nx.instructions.md to .gitignore if not present",
+      "implementation": "./src/migrations/update-21-1-0/add-gitignore-entry",
       "package": "nx",
-      "name": "use-legacy-cache"
+      "name": "21-1-0-add-ignore-entries-for-nx-rule-files"
     },
     {
-      "cli": "nx",
-      "version": "19.6.0-beta.4",
-      "description": "Update ciWebServerCommand to use static serve for the application.",
-      "implementation": "./src/migrations/update-19-6-0/update-ci-webserver-for-static-serve",
+      "version": "21.0.0-beta.10",
+      "description": "Removes the `tsConfig` and `copyFiles` options from the `@nx/cypress:cypress` executor.",
+      "implementation": "./src/migrations/update-21-0-0/remove-tsconfig-and-copy-files-options-from-cypress-executor",
       "package": "@nx/cypress",
-      "name": "update-19-6-0-update-ci-webserver-for-vite"
+      "name": "remove-tsconfig-and-copy-files-options-from-cypress-executor"
     },
     {
       "cli": "nx",
-      "version": "19.6.0-beta.0",
-      "description": "Update workspace to use Storybook v8",
-      "implementation": "./src/migrations/update-19-6-0/update-sb-8",
-      "package": "@nx/storybook",
-      "name": "update-19-6-0-add-nx-packages"
-    },
-    {
-      "cli": "nx",
-      "version": "20.0.0-beta.5",
-      "description": "replace getJestProjects with getJestProjectsAsync",
-      "implementation": "./src/migrations/update-20-0-0/replace-getJestProjects-with-getJestProjectsAsync",
+      "version": "21.0.0-beta.9",
+      "description": "Replace usage of `getJestProjects` with `getJestProjectsAsync`.",
+      "implementation": "./src/migrations/update-21-0-0/replace-getJestProjects-with-getJestProjectsAsync",
       "package": "@nx/jest",
-      "name": "replace-getJestProjects-with-getJestProjectsAsync"
+      "name": "replace-getJestProjects-with-getJestProjectsAsync-v21"
+    },
+    {
+      "version": "21.0.0-beta.10",
+      "description": "Remove the previously deprecated and unused `tsConfig` option from the `@nx/jest:jest` executor.",
+      "implementation": "./src/migrations/update-21-0-0/remove-tsconfig-option-from-jest-executor",
+      "package": "@nx/jest",
+      "name": "remove-tsconfig-option-from-jest-executor"
     },
     {
       "cli": "nx",
-      "version": "19.2.1-beta.0",
-      "requires": { "@angular-eslint/eslint-plugin": ">=18.0.0" },
-      "description": "Installs the '@typescript-eslint/utils' package when having installed '@angular-eslint/eslint-plugin' or '@angular-eslint/eslint-plugin-template' with version >=18.0.0.",
-      "factory": "./src/migrations/update-19-2-1/add-typescript-eslint-utils",
+      "version": "20.4.0-beta.1",
+      "requires": { "@angular/core": ">=19.1.0" },
+      "description": "Update the @angular/cli package version to ~19.1.0.",
+      "factory": "./src/migrations/update-20-4-0/update-angular-cli",
       "package": "@nx/angular",
-      "name": "add-typescript-eslint-utils"
+      "name": "update-angular-cli-version-19-1-0"
     },
     {
       "cli": "nx",
-      "version": "19.5.0-beta.1",
-      "requires": { "@angular/core": ">=18.1.0" },
-      "description": "Update the @angular/cli package version to ~18.1.0.",
-      "factory": "./src/migrations/update-19-5-0/update-angular-cli",
+      "version": "20.5.0-beta.5",
+      "requires": { "@angular/core": ">=19.2.0" },
+      "description": "Update the @angular/cli package version to ~19.2.0.",
+      "factory": "./src/migrations/update-20-5-0/update-angular-cli",
       "package": "@nx/angular",
-      "name": "update-angular-cli-version-18-1-0"
+      "name": "update-angular-cli-version-19-2-0"
     },
     {
       "cli": "nx",
-      "version": "19.6.0-beta.4",
-      "description": "Ensure Module Federation DTS is turned off by default.",
-      "factory": "./src/migrations/update-19-6-0/turn-off-dts-by-default",
+      "version": "21.0.0-beta.3",
+      "description": "Set the `continuous` option to `true` for continuous tasks.",
+      "factory": "./src/migrations/update-21-0-0/set-continuous-option",
       "package": "@nx/angular",
-      "name": "update-19-6-0"
-    },
-    {
-      "cli": "nx",
-      "version": "19.6.0-beta.7",
-      "requires": { "@angular/core": ">=18.2.0" },
-      "description": "Update the @angular/cli package version to ~18.2.0.",
-      "factory": "./src/migrations/update-19-6-0/update-angular-cli",
-      "package": "@nx/angular",
-      "name": "update-angular-cli-version-18-2-0"
-    },
-    {
-      "cli": "nx",
-      "version": "19.6.1-beta.0",
-      "description": "Ensure Target Defaults are set correctly for Module Federation.",
-      "factory": "./src/migrations/update-19-6-1/ensure-depends-on-for-mf",
-      "package": "@nx/angular",
-      "name": "update-19-6-1-ensure-module-federation-target-defaults"
-    },
-    {
-      "cli": "nx",
-      "version": "20.2.0-beta.2",
-      "description": "Update the ModuleFederationConfig import use @nx/module-federation.",
-      "factory": "./src/migrations/update-20-2-0/migrate-mf-imports-to-new-package",
-      "package": "@nx/angular",
-      "name": "update-20-2-0-update-module-federation-config-import"
-    },
-    {
-      "cli": "nx",
-      "version": "20.2.0-beta.2",
-      "description": "Update the withModuleFederation import use @nx/module-federation/angular.",
-      "factory": "./src/migrations/update-20-2-0/migrate-with-mf-import-to-new-package",
-      "package": "@nx/angular",
-      "name": "update-20-2-0-update-with-module-federation-import"
-    },
-    {
-      "cli": "nx",
-      "version": "20.2.0-beta.5",
-      "requires": { "@angular/core": ">=19.0.0" },
-      "description": "Update the @angular/cli package version to ~19.0.0.",
-      "factory": "./src/migrations/update-20-2-0/update-angular-cli",
-      "package": "@nx/angular",
-      "name": "update-angular-cli-version-19-0-0"
-    },
-    {
-      "cli": "nx",
-      "version": "20.2.0-beta.5",
-      "requires": { "@angular/core": ">=19.0.0" },
-      "description": "Add the '@angular/localize/init' polyfill to the 'polyfills' option of targets using esbuild-based executors.",
-      "factory": "./src/migrations/update-20-2-0/add-localize-polyfill-to-targets",
-      "package": "@nx/angular",
-      "name": "add-localize-polyfill-to-targets"
-    },
-    {
-      "cli": "nx",
-      "version": "20.2.0-beta.5",
-      "requires": { "@angular/core": ">=19.0.0" },
-      "description": "Update '@angular/ssr' import paths to use the new '/node' entry point when 'CommonEngine' is detected.",
-      "factory": "./src/migrations/update-20-2-0/update-angular-ssr-imports-to-use-node-entry-point",
-      "package": "@nx/angular",
-      "name": "update-angular-ssr-imports-to-use-node-entry-point"
-    },
-    {
-      "cli": "nx",
-      "version": "20.2.0-beta.6",
-      "requires": { "@angular/core": ">=19.0.0" },
-      "description": "Disable the Angular ESLint prefer-standalone rule if not set.",
-      "factory": "./src/migrations/update-20-2-0/disable-angular-eslint-prefer-standalone",
-      "package": "@nx/angular",
-      "name": "disable-angular-eslint-prefer-standalone"
-    },
-    {
-      "cli": "nx",
-      "version": "20.2.0-beta.8",
-      "requires": { "@angular/core": ">=19.0.0" },
-      "description": "Remove Angular ESLint rules that were removed in v19.0.0.",
-      "factory": "./src/migrations/update-20-2-0/remove-angular-eslint-rules",
-      "package": "@nx/angular",
-      "name": "remove-angular-eslint-rules"
-    },
-    {
-      "cli": "nx",
-      "version": "20.2.0-beta.8",
-      "requires": { "@angular/core": ">=19.0.0" },
-      "description": "Remove the deprecated 'tailwindConfig' option from ng-packagr executors. Tailwind CSS configurations located at the project or workspace root will be picked up automatically.",
-      "factory": "./src/migrations/update-20-2-0/remove-tailwind-config-from-ng-packagr-executors",
-      "package": "@nx/angular",
-      "name": "remove-tailwind-config-from-ng-packagr-executors"
-    },
-    {
-      "cli": "nx",
-      "version": "20.3.0-beta.2",
-      "description": "If workspace includes Module Federation projects, ensure the new @nx/module-federation package is installed.",
-      "factory": "./src/migrations/update-20-3-0/ensure-nx-module-federation-package",
-      "package": "@nx/angular",
-      "name": "ensure-nx-module-federation-package"
-    },
-    {
-      "version": "19.0.0",
-      "description": "Updates non-standalone Directives, Component and Pipes to 'standalone:false' and removes 'standalone:true' from those who are standalone",
-      "factory": "./bundles/explicit-standalone-flag#migrate",
-      "package": "@angular/core",
-      "name": "explicit-standalone-flag"
-    },
-    {
-      "version": "19.0.0",
-      "description": "Updates ExperimentalPendingTasks to PendingTasks",
-      "factory": "./bundles/pending-tasks#migrate",
-      "package": "@angular/core",
-      "name": "pending-tasks"
-    },
-    {
-      "version": "19.0.0",
-      "description": "Replaces `APP_INITIALIZER`, `ENVIRONMENT_INITIALIZER` & `PLATFORM_INITIALIZER` respectively with `provideAppInitializer`, `provideEnvironmentInitializer` & `providePlatformInitializer`.",
-      "factory": "./bundles/provide-initializer#migrate",
-      "optional": true,
-      "package": "@angular/core",
-      "name": "provide-initializer"
-    },
-    {
-      "version": "19.0.0-0",
-      "description": "Updates Angular Material to v19",
-      "factory": "./ng-update/index_bundled#updateToV19",
-      "package": "@angular/material",
-      "name": "migration-v19"
-    },
-    {
-      "version": "19.0.0-0",
-      "description": "Updates the Angular CDK to v19",
-      "factory": "./ng-update/index#updateToV19",
-      "package": "@angular/cdk",
-      "name": "migration-v19"
+      "name": "set-continuous-option"
     }
   ]
 }
