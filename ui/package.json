@@ -23,7 +23,7 @@
     "@angular/material": "19.2.18",
     "@angular/platform-browser": "19.2.14",
     "@angular/platform-browser-dynamic": "19.2.14",
-    "@angular/router": "19.2.14",
+    "@angular/router": "20.0.0",
     "@nx/angular": "^20.5.1",
     "@storybook/addon-interactions": "8.6.11",
     "rxjs": "7.8.1",
