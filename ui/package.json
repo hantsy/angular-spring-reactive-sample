@@ -41,7 +41,7 @@
     "@angular-eslint/template-parser": "19.2.0",
     "@angular/cli": "~19.2.0",
     "@angular/compiler-cli": "19.2.14",
-    "@angular/language-service": "19.2.14",
+    "@angular/language-service": "20.0.0",
     "@nx/cypress": "21.1.2",
     "@nx/jest": "21.1.2",
     "@nx/storybook": "21.1.2",
