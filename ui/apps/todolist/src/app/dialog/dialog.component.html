@@ -5,7 +5,9 @@
       <mat-icon svgIcon="avatars:{{selectedAvatar}}" class="avatar"></mat-icon>
       <mat-form-field>
         <mat-select name="avatar" fxFlex placeholder="Avatar" [(ngModel)]="selectedAvatar">
-          <mat-option *ngFor="let avatar of avatars; let i = index;" [value]="avatar">Avatar - {{i + 1}}</mat-option>
+          @for (avatar of avatars; track avatar; let i = $index) {
+            <mat-option [value]="avatar">Avatar - {{i + 1}}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>

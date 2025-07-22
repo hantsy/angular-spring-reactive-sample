@@ -24,8 +24,8 @@ describe('HttpClient testing', () => {
 });
 
     // Inject the http service and test controller for each test
-    httpClient = TestBed.get(HttpClient);
-    httpTestingController = TestBed.get(HttpTestingController);
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
   afterEach(() => {
     // After every test, assert that there are no more pending requests.

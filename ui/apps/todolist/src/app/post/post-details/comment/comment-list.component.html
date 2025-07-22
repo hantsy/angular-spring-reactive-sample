@@ -1,3 +1,7 @@
-<mat-nav-list *ngIf="comments">
-  <app-comment-list-item [comment]="c" *ngFor="let c of comments"></app-comment-list-item>
-</mat-nav-list>
+@if (comments) {
+  <mat-nav-list>
+    @for (c of comments; track c) {
+      <app-comment-list-item [comment]="c"></app-comment-list-item>
+    }
+  </mat-nav-list>
+}

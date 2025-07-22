@@ -45,9 +45,9 @@ describe('Service: Post', () => {
 
     // Inject the http, test controller, and service-under-test
     // as they will be referenced by each test.
-    httpClient = TestBed.get(HttpClient);
-    httpTestingController = TestBed.get(HttpTestingController);
-    postService = TestBed.get(PostService);
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    postService = TestBed.inject(PostService);
   });
 
   afterEach(() => {
@@ -64,7 +64,7 @@ describe('Service: Post', () => {
 
     beforeEach(() => {
       expectedPosts = posts;
-      postService = TestBed.get(PostService);
+      postService = TestBed.inject(PostService);
     });
 
     it('should get posts...', () => {
@@ -116,7 +116,7 @@ describe('Service: Post', () => {
 
     beforeEach(() => {
       expectedPost = posts[0];
-      postService = TestBed.get(PostService);
+      postService = TestBed.inject(PostService);
     });
 
     it('should get post...', () => {
@@ -152,7 +152,7 @@ describe('Service: Post', () => {
 
     beforeEach(() => {
       expectedPost = posts[0];
-      postService = TestBed.get(PostService);
+      postService = TestBed.inject(PostService);
     });
 
     it('should save post...', () => {
@@ -174,7 +174,7 @@ describe('Service: Post', () => {
 
     beforeEach(() => {
       expectedPost = posts[0];
-      postService = TestBed.get(PostService);
+      postService = TestBed.inject(PostService);
     });
 
     it('should update post...', () => {
@@ -209,7 +209,7 @@ describe('Service: Post', () => {
 
     beforeEach(() => {
       expectedPost = posts[0];
-      postService = TestBed.get(PostService);
+      postService = TestBed.inject(PostService);
     });
 
     it('should delete post...', () => {

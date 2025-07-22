@@ -7,25 +7,33 @@
           <input type="text" matInput #userControl="ngModel" placeholder="Username" type="text" maxlength="30" name="username" [(ngModel)]="username"
             required>
         </mat-form-field>
-        <mat-hint fxLayoutAlign="start" *ngIf="userControl.invalid && !userControl.pristine">
-          <span *ngIf="passControl.hasError('required')" class="tc-red-600">username is required</span>
-        </mat-hint>
+        @if (userControl.invalid && !userControl.pristine) {
+          <mat-hint fxLayoutAlign="start">
+            @if (passControl.hasError('required')) {
+              <span class="tc-red-600">username is required</span>
+            }
+          </mat-hint>
+        }
       </p>
 
       <p>
         <mat-form-field fxFlex>
           <input type="password" matInput #passControl="ngModel" placeholder="Password" type="password" name="password" [(ngModel)]="password"
             required>
-          <mat-error fxLayoutAlign="start" *ngIf="passControl.hasError('required')">
-            Password is <strong>Required</strong>.
-          </mat-error>
+          @if (passControl.hasError('required')) {
+            <mat-error fxLayoutAlign="start">
+              Password is <strong>Required</strong>.
+            </mat-error>
+          }
         </mat-form-field>
 
       </p>
 
-      <p *ngIf="errorMessage" class="loginError">
-        {{ errorMessage }}
-      </p>
+      @if (errorMessage) {
+        <p class="loginError">
+          {{ errorMessage }}
+        </p>
+      }
 
       <p class="loginButtons">
         <button type="submit" color="accent" mat-button md-raised-button fxFlex [disabled]="loginForm.invalid||loginForm.pending">Login</button>
