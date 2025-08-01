@@ -44,7 +44,7 @@
     "@nx/cypress": "21.3.2",
     "@nx/jest": "21.3.2",
     "@nx/storybook": "21.3.2",
-    "@nx/workspace": "21.3.2",
+    "@nx/workspace": "21.3.11",
     "@schematics/angular": "20.1.1",
     "@storybook/core-server": "8.6.11",
     "@types/jasmine": "~4.0.0",
