@@ -45,7 +45,7 @@
     "@nx/jest": "21.3.2",
     "@nx/storybook": "21.3.2",
     "@nx/workspace": "21.3.2",
-    "@schematics/angular": "20.1.1",
+    "@schematics/angular": "20.3.3",
     "@storybook/core-server": "8.6.11",
     "@types/jasmine": "~4.0.0",
     "@types/jest": "30.0.0",
