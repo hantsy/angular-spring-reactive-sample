@@ -21,7 +21,7 @@
     "@angular/core": "20.1.2",
     "@angular/forms": "20.1.2",
     "@angular/material": "20.1.2",
-    "@angular/platform-browser": "20.1.2",
+    "@angular/platform-browser": "21.2.15",
     "@angular/platform-browser-dynamic": "20.1.2",
     "@angular/router": "20.1.2",
     "@nx/angular": "21.3.2",
